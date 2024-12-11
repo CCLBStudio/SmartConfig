@@ -1,0 +1,139 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cf3cc29e14b70bb43b26469f34a663f8, type: 3}
+  m_Name: RC-EditWindowSettings
+  m_EditorClassIdentifier: 
+  languageFontSize: 15
+  languageLineHeight: 30
+  foldoutNameColor: {r: 1, g: 0.909091, b: 0, a: 1}
+  foldoutBackgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  headerButtonWidth: 85
+  headerButtonHeight: 50
+  syncFromCloudTexture: {fileID: 2800000, guid: 4c0505830efb0f64ea357fcd0143319a, type: 3}
+  saveToJsonTexture: {fileID: 2800000, guid: f461e74883d88d541a10c79fa0aa65f8, type: 3}
+  uploadTexture: {fileID: 2800000, guid: 022f6f70523ea5444b8272808d7f2c43, type: 3}
+  saveLocalTexture: {fileID: 2800000, guid: 08a850af42a146946b144455d188a7f2, type: 3}
+  syncFromJsonTexture: {fileID: 2800000, guid: 039dff39134703a4ea94de54c82208e1, type: 3}
+  syncFromCloudTooltip: Fetch the Json file from cloud and override all current data
+    with it.
+  saveToJsonTooltip: Overwrite the local Json file with the current data.
+  uploadTooltip: Upload the local Json file to the remote server, overriding any
+    file present on cloud.
+  saveLocalTooltip: Save the current data locally, but does NOT overwrite the local
+    json.
+  syncFromJsonTooltip: Refresh the current data with the local Json file.
+  spaceBetweenHeaderButtons: 15
+  deleteBtnTexture: {fileID: 2800000, guid: 46d8b0ef1eab9e14faac68a64149d3aa, type: 3}
+  keyWidth: 300
+  typeWidth: 150
+  valueWidth: 400
+  categoryWidth: 300
+  lineHeight: 100
+  spacingBetweenElements: 8
+  bottomScrollOffset: 100
+  boxBorderOffset: 5
+  lineSeparationColor: {r: 0.73333335, g: 0.87058824, b: 0.98039216, a: 0.33333334}
+  fixBadCategoryPrefixHeight: 30
+  keyUsageKeyWidth: 300
+  keyUsageCountWidth: 180
+  keyUsageDeleteButtonWidth: 150
+  keyUsageLineSizeOffset: 6
+  languageFlags:
+  - key: 0
+    value: {fileID: 2800000, guid: a4d6c0ae53e15f04fb4a88564a96d8e5, type: 3}
+  - key: 1
+    value: {fileID: 2800000, guid: 7a3f54514471adb47b2bba767d6e7b8a, type: 3}
+  - key: 2
+    value: {fileID: 2800000, guid: f350cfb6e49ffbe46a62bb54aba91c2e, type: 3}
+  - key: 3
+    value: {fileID: 2800000, guid: b309d247ef8a1304e95399f4cc49d01a, type: 3}
+  - key: 4
+    value: {fileID: 2800000, guid: 016dde594adb28a4fa3b789077e043bd, type: 3}
+  - key: 5
+    value: {fileID: 2800000, guid: f350cfb6e49ffbe46a62bb54aba91c2e, type: 3}
+  - key: 6
+    value: {fileID: 2800000, guid: 4a2f887abf7999f4783c87997d58c975, type: 3}
+  - key: 7
+    value: {fileID: 2800000, guid: fc2042a60bb9b294ca28ce78d181a7b1, type: 3}
+  - key: 8
+    value: {fileID: 2800000, guid: 7563cee518d36d4429d9d9c00aae207d, type: 3}
+  - key: 9
+    value: {fileID: 2800000, guid: 417f0f4fcdb3864458d50c6a4d9d95dc, type: 3}
+  - key: 10
+    value: {fileID: 2800000, guid: c4122cc3c5850dd45b66a68413e94497, type: 3}
+  - key: 11
+    value: {fileID: 2800000, guid: 640faf7f28f96914e8b598e0943042c5, type: 3}
+  - key: 12
+    value: {fileID: 2800000, guid: 0877b14fd7dae5a4196c2f4da39beeb9, type: 3}
+  - key: 13
+    value: {fileID: 2800000, guid: 04ad3016e78aac3448aa21647ee5d2f2, type: 3}
+  - key: 14
+    value: {fileID: 2800000, guid: 89b171912e3b3e24086e7d3b3822919e, type: 3}
+  - key: 15
+    value: {fileID: 2800000, guid: 832d04786b268bf43afb5caf89adddc8, type: 3}
+  - key: 16
+    value: {fileID: 2800000, guid: 693c8860390b17c4cab778e0e16bb0df, type: 3}
+  - key: 17
+    value: {fileID: 2800000, guid: e0ea03c8c56769b4ca041a9a69fbfc76, type: 3}
+  - key: 18
+    value: {fileID: 2800000, guid: 05760847eb69b3649a1936f85beae261, type: 3}
+  - key: 18
+    value: {fileID: 2800000, guid: 05760847eb69b3649a1936f85beae261, type: 3}
+  - key: 19
+    value: {fileID: 2800000, guid: ade14a385df416645ac8b0f9256bc7a8, type: 3}
+  - key: 20
+    value: {fileID: 2800000, guid: 2f0421549a04a6044972488d476e0ff4, type: 3}
+  - key: 21
+    value: {fileID: 2800000, guid: 74584ed73c7b6a446a46e8d3bce75675, type: 3}
+  - key: 22
+    value: {fileID: 2800000, guid: b73ee023eb17d3e44a032171eea544a3, type: 3}
+  - key: 23
+    value: {fileID: 2800000, guid: a686b7b8d3d325a4b83540b729c56415, type: 3}
+  - key: 24
+    value: {fileID: 2800000, guid: 2e9f121bbab5e0644a068398ab9adef4, type: 3}
+  - key: 25
+    value: {fileID: 2800000, guid: d7c32fc104bb4934e9bf27809935aa46, type: 3}
+  - key: 26
+    value: {fileID: 2800000, guid: 03e6d496e2baa8c4fa53c8a3e1c6ad1a, type: 3}
+  - key: 27
+    value: {fileID: 2800000, guid: 75d66f7158a14aa4fadcd8860c8d0039, type: 3}
+  - key: 28
+    value: {fileID: 2800000, guid: 941d5c256e5c5404c8fbd96f64a779ff, type: 3}
+  - key: 29
+    value: {fileID: 2800000, guid: a3f55d98557857849a0a91cd99235bd4, type: 3}
+  - key: 30
+    value: {fileID: 2800000, guid: e34eccc5cdb2af145ba0db705e629892, type: 3}
+  - key: 31
+    value: {fileID: 2800000, guid: d140bdd68f7aa4e4bb373f79e2d58c81, type: 3}
+  - key: 32
+    value: {fileID: 2800000, guid: 45c30ed3efe99374095ee4af22fd67fb, type: 3}
+  - key: 33
+    value: {fileID: 2800000, guid: 77568cde45cb7a541871ccff7877dcaf, type: 3}
+  - key: 34
+    value: {fileID: 2800000, guid: f350cfb6e49ffbe46a62bb54aba91c2e, type: 3}
+  - key: 35
+    value: {fileID: 2800000, guid: 763d93edeb8eb1147bb9fc716d099aa2, type: 3}
+  - key: 36
+    value: {fileID: 2800000, guid: ff93820a36ad6d04d8fd95ece09cdf15, type: 3}
+  - key: 37
+    value: {fileID: 2800000, guid: 51c248c3d70b9e94a9aa98b1aa801093, type: 3}
+  - key: 38
+    value: {fileID: 2800000, guid: f7555c5c34cdb1647bfad2eabb02ea4d, type: 3}
+  - key: 39
+    value: {fileID: 2800000, guid: 53f46850e47c9944abfce7ecffe4b1a7, type: 3}
+  - key: 40
+    value: {fileID: 2800000, guid: 4a2f887abf7999f4783c87997d58c975, type: 3}
+  - key: 41
+    value: {fileID: 2800000, guid: 3f9734d6630f0f04abb4a8d06a45deb1, type: 3}
+  - key: 42
+    value: {fileID: 2800000, guid: 252c4eac1e7821e4d9c922d13e6eda9a, type: 3}
+  flagsFolder: Assets\CCLBStudio\RemoteConfig\Editor\Textures\Flags
