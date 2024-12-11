@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using ReaaliStudio.Utils.Extensions;
 using UnityEditor;
 using UnityEngine;
 
@@ -22,7 +21,7 @@ namespace CCLBStudio.RemoteConfig
             _localTranslationFile = serializedObject.FindProperty(RemoteConfigService.LocalTranslationFileProperty);
             _existingLanguages = serializedObject.FindProperty(RemoteConfigService.ExistingLanguagesProperty);
 
-            _remainingProperties = EditorExtender.GetSelfPropertiesExcluding(serializedObject, RemoteConfigService.DefaultLanguageProperty,
+            _remainingProperties = RcEditorExtender.GetSelfPropertiesExcluding(serializedObject, RemoteConfigService.DefaultLanguageProperty,
                 RemoteConfigService.LocalTranslationFileProperty, RemoteConfigService.ExistingLanguagesProperty);
         }
     
@@ -35,7 +34,7 @@ namespace CCLBStudio.RemoteConfig
             }
             
             serializedObject.Update();
-            EditorExtender.DrawScriptField(serializedObject);
+            RcEditorExtender.DrawScriptField(serializedObject);
             
             GUILayout.Space(10);
             

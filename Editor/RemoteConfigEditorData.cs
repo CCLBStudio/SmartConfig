@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
-using ReaaliStudio.Utils.Extensions;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -36,7 +35,7 @@ namespace CCLBStudio.RemoteConfig
         {
             if (!settings)
             {
-                settings = EditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
+                settings = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
             }
             
             foreach (var editorEntry in allAppEntries.Concat(platformEntries.SelectMany(pair => pair.Value)))
@@ -772,7 +771,7 @@ namespace CCLBStudio.RemoteConfig
 
         private RemoteConfigService GetRcService()
         {
-            var service = EditorExtender.LoadScriptableAsset<RemoteConfigService>();
+            var service = RcEditorExtender.LoadScriptableAsset<RemoteConfigService>();
             if (!service || !service.LocalTranslationFile)
             {
                 Debug.LogError("Problem with remote config service ! Unable to write the json file.");
@@ -785,7 +784,7 @@ namespace CCLBStudio.RemoteConfig
         private string GetJsonFileAbsolutePath(Object localFileAsset)
         {
             string relativePath = AssetDatabase.GetAssetPath(localFileAsset);
-            return IOExtender.RelativeToAbsolutePath(relativePath);
+            return RcIOExtender.RelativeToAbsolutePath(relativePath);
         }
 
         #endregion

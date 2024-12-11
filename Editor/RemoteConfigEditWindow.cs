@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ReaaliStudio.Utils.Extensions;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -93,9 +92,9 @@ namespace CCLBStudio.RemoteConfig
 
         private void OnEnable()
         {
-            _remoteConfigService = EditorExtender.LoadScriptableAsset<RemoteConfigService>();
-            _editorData = EditorExtender.LoadScriptableAsset<RemoteConfigEditorData>();
-            _settings = EditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
+            _remoteConfigService = RcEditorExtender.LoadScriptableAsset<RemoteConfigService>();
+            _editorData = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditorData>();
+            _settings = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
 
             _scrollViewRect = new Rect();
             _scrollContentRect = new Rect();
@@ -188,14 +187,14 @@ namespace CCLBStudio.RemoteConfig
         {
             if (!_remoteConfigService)
             {
-                _remoteConfigService = EditorExtender.LoadScriptableAsset<RemoteConfigService>();
+                _remoteConfigService = RcEditorExtender.LoadScriptableAsset<RemoteConfigService>();
                 EditorGUILayout.HelpBox("Unable to load the Remote Config Service !", MessageType.Error);
                 return false;
             }
 
             if (!_settings)
             {
-                _settings = EditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
+                _settings = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
                 EditorGUILayout.HelpBox("Unable to load the settings file !", MessageType.Error);
                 return false;
             }
@@ -1366,7 +1365,7 @@ namespace CCLBStudio.RemoteConfig
             string directoryPath = Path.GetDirectoryName(servicePath);
             string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, RemoteConfigService.FileName));
             
-            string absolutePath = IOExtender.RelativeToAbsolutePath(projectRelativePath);
+            string absolutePath = RcIOExtender.RelativeToAbsolutePath(projectRelativePath);
             File.WriteAllText(absolutePath, "{\n \"version\": 1,\n \"platforms\": [], \n \"entries\": [] \n}");
             
             AssetDatabase.Refresh();

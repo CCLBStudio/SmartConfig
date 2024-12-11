@@ -1,9 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using EditorCools;
-using UnityEditor;
 using UnityEngine;
 
 namespace CCLBStudio.RemoteConfig
@@ -55,52 +50,5 @@ namespace CCLBStudio.RemoteConfig
 
         [Header("Language Flags")]
         public List<RemoteConfigKeyValuePair<SystemLanguage, Texture>> languageFlags;
-        [SerializeField] private string flagsFolder;
-        
-        [Button]
-        private void BuildFlagPairs()
-        {
-            string absoluteFolderPath = IOExtender.RelativeToAbsolutePath(flagsFolder);
-            languageFlags = new List<RemoteConfigKeyValuePair<SystemLanguage, Texture>>();
-            foreach (SystemLanguage lang in Enum.GetValues(typeof(SystemLanguage)))
-            {
-                if (lang == SystemLanguage.Unknown)
-                {
-                    continue;
-                }
-
-                string twoLetters = lang.ToTwoLettersCountry().ToLower();
-                string flagPath = $"{absoluteFolderPath}/{twoLetters}.png";
-                if (File.Exists(flagPath))
-                {
-                    languageFlags.Add(new RemoteConfigKeyValuePair<SystemLanguage, Texture>(lang, AssetDatabase.LoadAssetAtPath<Texture>(IOExtender.AbsoluteToProjectRelativePath(flagPath))));
-                }
-                else
-                {
-                    Debug.LogError($"No flag for {lang} at path {flagPath} !");
-                }
-            }
-
-            EditorUtility.SetDirty(this);
-            AssetDatabase.SaveAssetIfDirty(this);
-        }
-
-        [Button]
-        private void RemoveUnusedFlags()
-        {
-            string absoluteFolderPath = IOExtender.RelativeToAbsolutePath(flagsFolder);
-            foreach (var path in Directory.EnumerateFiles(absoluteFolderPath))
-            {
-                string n = Path.GetFileNameWithoutExtension(path);
-                if (languageFlags.Any(x => x.Value.name.Contains(n)))
-                {
-                    continue;
-                }
-
-                File.Delete(path);
-            }
-            
-            AssetDatabase.Refresh();
-        }
     }
 }
