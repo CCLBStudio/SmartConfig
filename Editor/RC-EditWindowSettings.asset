@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   languageFontSize: 15
   languageLineHeight: 30
-  foldoutNameColor: {r: 1, g: 0.909091, b: 0, a: 1}
+  foldoutNameColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   foldoutBackgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   headerButtonWidth: 85
   headerButtonHeight: 50

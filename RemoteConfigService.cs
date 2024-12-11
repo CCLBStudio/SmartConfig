@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CCLBStudio.RemoteConfig
 {
-    [CreateAssetMenu(fileName = "RemoteConfigService", menuName = "Reaali/Services/Remote Config/Service SO")]
+    [CreateAssetMenu(fileName = "RemoteConfigService", menuName = "CCLB Studio/Remote Config/Service SO")]
     public class RemoteConfigService : ScriptableObject
     {
 #region Editor Properties
@@ -149,7 +149,7 @@ namespace CCLBStudio.RemoteConfig
         public RemoteConfigTransferStrategy TransferStrategy => transferStrategy;
 
         [SerializeField] private RemoteConfigTransferStrategy transferStrategy;
-        [SerializeField] private SystemLanguage defaultLanguage = SystemLanguage.French;
+        [SerializeField] private SystemLanguage defaultLanguage = SystemLanguage.English;
         [SerializeField] private TextAsset localTranslationFile;
         [SerializeField] private List<SystemLanguage> existingLanguages;
 

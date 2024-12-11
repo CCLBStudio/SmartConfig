@@ -13,10 +13,10 @@ namespace CCLBStudio.RemoteConfig
     public class RemoteConfigEditorData : ScriptableObject
     {
         public RemoteConfigEditWindowSettings settings;
-        public List<RemoteConfigEditorLanguage> allLanguages;
+        public List<RemoteConfigEditorLanguage> allLanguages= new ();
         public List<RemoteConfigKeyValuePair<string, string>> allCategories = new ();
-        public List<RemoteConfigKeyValuePair<RuntimePlatform, List<RemoteConfigEditorEntry>>> platformEntries;
-        public List<RemoteConfigEditorEntry> allAppEntries;
+        public List<RemoteConfigKeyValuePair<RuntimePlatform, List<RemoteConfigEditorEntry>>> platformEntries= new ();
+        public List<RemoteConfigEditorEntry> allAppEntries= new ();
         
         [NonSerialized] private Dictionary<string, RemoteConfigEditorEntry> _allValidAppEntries;
         [NonSerialized] private Dictionary<RuntimePlatform, Dictionary<string, RemoteConfigEditorEntry>> _allValidPlatformEntries;

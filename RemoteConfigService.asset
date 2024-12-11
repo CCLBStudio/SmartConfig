@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keyUses: []
   transferStrategy: {fileID: 0}
-  defaultLanguage: 14
+  defaultLanguage: 10
   localTranslationFile: {fileID: 4900000, guid: 72242299064add241b416ece9fdb7a0d, type: 3}
   existingLanguages: 0e0000000a000000

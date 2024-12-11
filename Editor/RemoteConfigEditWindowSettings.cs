@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace CCLBStudio.RemoteConfig
 {
-    [CreateAssetMenu(menuName = "CCLB Studio/Remote Config/Editor/Settings")]
+    [CreateAssetMenu(fileName = "NewRemoteConfigEditSettings", menuName = "CCLB Studio/Remote Config/Editor/Settings")]
     public class RemoteConfigEditWindowSettings : ScriptableObject
     {
         [Header("Languages Settings")]

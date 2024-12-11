@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a8513a863d06124fbdd79ff47dd74cd, type: 3}
   m_Name: RC-EditorDataSaver
   m_EditorClassIdentifier: 
-  settings: {fileID: 11400000, guid: 142a4acd2cbc8904a9c32ca58fd3e884, type: 2}
+  settings: {fileID: 0}
   allLanguages: []
   allCategories: []
   platformEntries: []

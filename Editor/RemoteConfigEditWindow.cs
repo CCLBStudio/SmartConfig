@@ -200,6 +200,16 @@ namespace CCLBStudio.RemoteConfig
                 return false;
             }
 
+            // if (!_editorData)
+            // {
+            //     EditorGUILayout.HelpBox("There is no editor data file. This file is required so save your changes. Click the button below to create one.", MessageType.Warning);
+            //     if (GUILayout.Button("Create New Editor File"))
+            //     {
+            //         CreateAndBindEditorDataSaver();
+            //     }
+            //     return false;
+            // }
+
             if (!_remoteConfigService.LocalTranslationFile)
             {
                 EditorGUILayout.HelpBox("There is no local translation file. This file holds all the remote config data for the current version and is what will be uploaded on the server. Click the button below to create a empty one.", MessageType.Warning);
@@ -214,6 +224,7 @@ namespace CCLBStudio.RemoteConfig
             if (!_editorData)
             {
                 CreateAndBindEditorDataSaver();
+                //return false;
             }
 
             return true;
