@@ -122,23 +122,6 @@ MonoBehaviour:
     - key: 10
       value: Hello world !
     - key: 14
-      value: 
-    editorData: {fileID: 11400000}
-    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
-  - key: app_my_string
-    type: 3
-    category: 
-    categoryIndex: 0
-    respectCategoryPrefix: 1
-    isValid: 1
-    intValue: 0
-    boolValue: 0
-    stringValue: Hello world !
-    floatValue: 0
-    translatableValue:
-    - key: 10
-      value: 
-    - key: 14
-      value: 
+      value: Bonjour le monde !
     editorData: {fileID: 11400000}
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}

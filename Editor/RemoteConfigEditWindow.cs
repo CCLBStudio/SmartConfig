@@ -809,7 +809,7 @@ namespace CCLBStudio.RemoteConfig
                     DeleteCategory(i);
                 }
                 
-                EditorGUILayout.LabelField(pair.Key + " :", EditorStyles.boldLabel, GUILayout.Width(100));
+                EditorGUILayout.LabelField(pair.Key + " :", EditorStyles.boldLabel, GUILayout.Width(130));
                 GUILayout.Space(_settings.spacingBetweenElements);
                 
                 EditorGUI.BeginChangeCheck();
