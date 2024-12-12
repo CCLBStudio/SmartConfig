@@ -33,99 +33,6 @@ namespace CCLBStudio.RemoteConfig
             set => localTranslationFile = value;
         }
 
-        // public void ImportFromOldRc()
-        // {
-        //     if (!oldRc || !localTranslationFile)
-        //     {
-        //         Debug.LogError("At least one file is missing.");
-        //         return;
-        //     }
-        //     
-        //     RemoteConfigJson jsonData = new RemoteConfigJson
-        //     {
-        //         platforms = new List<RemoteConfigPlatformEntryJson>(),
-        //         entries = new List<RemoteConfigEntryJson>(),
-        //         version = 1 // tmp
-        //     };
-        //
-        //     string content = oldRc.text;
-        //     
-        //     var records = content.Split(RemoteKey.LineDelimiter);
-        //     foreach (var record in records)
-        //     {
-        //         var fields = record.Split(RemoteKey.FieldDelimiter);
-        //         var index = fields[0].ToLower();
-        //         fields[0] = fields[0].Replace( " ", "" );
-        //
-        //         RemoteKey key = null;
-        //         if (fields.Length == 3)
-        //         {
-        //             key = new RemoteKey { name = fields[0], type = fields[1], value = fields[2].TrimEnd() };
-        //         }
-        //         
-        //         else if (fields.Length > 3)
-        //         {
-        //             key = new RemoteKey { name = fields[0], type = fields[1], value = fields[2].TrimEnd() +";"+fields[3].TrimEnd() };
-        //         }
-        //
-        //         if (key == null)
-        //         {
-        //             Debug.LogError("Unable to build key from record " + record);
-        //             continue;
-        //         }
-        //         
-        //         Debug.Log($"Key : {key.name}, type : {key.type}, value : {key.value}");
-        //
-        //         switch (key.type)
-        //         {
-        //             case "int":
-        //                 bool success = int.TryParse(key.value, out int val);
-        //                 if (!success)
-        //                 {
-        //                     Debug.LogError($"Unable to load int value from key {key.name}");
-        //                     continue;
-        //                 }
-        //                 
-        //                 jsonData.entries.Add(new RemoteConfigEntryJson
-        //                 {
-        //                     key = key.name,
-        //                     type = RemoteConfigValueType.Int,
-        //                     value = val
-        //                 });
-        //                 break;
-        //             
-        //             case "bool":
-        //                 jsonData.entries.Add(new RemoteConfigEntryJson
-        //                 {
-        //                     key = key.name,
-        //                     type = RemoteConfigValueType.Bool,
-        //                     value = key.value.ToLower() == "true"
-        //                 });
-        //                 break;
-        //             
-        //             case "string":
-        //                 Dictionary<string, string> jsonTranslations = new Dictionary<string, string>();
-        //                 jsonTranslations.Add(SystemLanguage.French.ToString(), key.value);
-        //                 jsonData.entries.Add(new RemoteConfigEntryJson
-        //                 {
-        //                     key = key.name,
-        //                     type = RemoteConfigValueType.Translatable,
-        //                     value = jsonTranslations
-        //                 });
-        //                 break;
-        //         }
-        //     }
-        //     
-        //     string json = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
-        //     string relativePath = AssetDatabase.GetAssetPath(localTranslationFile);
-        //     string p = IOExtender.RelativeToAbsolutePath(relativePath);
-        //     File.WriteAllText(p, json);
-        //
-        //     EditorUtility.SetDirty(this);
-        //     AssetDatabase.SaveAssetIfDirty(this);
-        //     AssetDatabase.Refresh();
-        // }
-
         private void TrackKeyUsage(string key)
         {
             int index = keyUses.FindIndex(x => x.Key == key);
@@ -169,7 +76,8 @@ namespace CCLBStudio.RemoteConfig
         [NonSerialized] private RemoteConfigData _runtimeRc;
         [NonSerialized] private SystemLanguage? _currentlySelectedLanguage;
         [NonSerialized] private SystemLanguage _currentlyTranslatedLanguage;
-        
+        [NonSerialized] private List<IRemoteConfigListener> _listeners;
+
         private enum InitializeAction {None, LoadFromCloud, LoadFromLocalFile}
 
         #region Unity Events
@@ -192,6 +100,7 @@ namespace CCLBStudio.RemoteConfig
             _runtimeFloatValues = new Dictionary<string, float>();
             _runtimeBoolValues = new Dictionary<string, bool>();
             _runtimeStringValues = new Dictionary<string, string>();
+            _listeners = new List<IRemoteConfigListener>();
 
             _runtimeRc = null;
             _currentlySelectedLanguage = null;
@@ -343,6 +252,7 @@ namespace CCLBStudio.RemoteConfig
 
             LoadPlatformSettings(rc);
             SelectLanguage(_currentlySelectedLanguage ?? defaultLanguage);
+            NotifyRemoteConfigLoaded();
         }
 
         #endregion
@@ -379,6 +289,7 @@ namespace CCLBStudio.RemoteConfig
             }
 
             SetTranslatableValuesForLanguage(lang);
+            NotifyRemoteConfigLanguageSelected();
         }
 
         private void SetTranslatableValuesForLanguage(SystemLanguage lang)
@@ -401,11 +312,12 @@ namespace CCLBStudio.RemoteConfig
 
         #region Data Access Methods
 
-        public bool GetBool(string key)
+        public bool GetBool(string key, out bool value)
         {
             if (!_runtimeBoolValues.ContainsKey(key))
             {
                 Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the boolean dictionary !");
+                value = false;
                 return false;
             }
             
@@ -413,52 +325,96 @@ namespace CCLBStudio.RemoteConfig
             TrackKeyUsage(key);
 #endif
             
-            return _runtimeBoolValues[key];
+            value = _runtimeBoolValues[key];
+            return true;
         }
 
-        public float GetFloat(string key)
+        public bool GetFloat(string key, out float value)
         {
             if (!_runtimeFloatValues.ContainsKey(key))
             {
                 Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the float dictionary !");
-                return 0f;
+                value = -1f;
+                return false;
             }
             
 #if UNITY_EDITOR
             TrackKeyUsage(key);
 #endif
 
-            return _runtimeFloatValues[key];
+            value = _runtimeFloatValues[key];
+            return true;
         }
         
-        public string GetString(string key)
+        public bool GetString(string key, out string value)
         {
             if (!_runtimeStringValues.ContainsKey(key))
             {
                 Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the string dictionary !");
-                return string.Empty;
+                value = string.Empty;
+                return false;
             }
             
 #if UNITY_EDITOR
             TrackKeyUsage(key);
 #endif
 
-            return _runtimeStringValues[key];
+            value = _runtimeStringValues[key];
+            return true;
         }
         
-        public int GetInt(string key)
+        public bool GetInt(string key, out int value)
         {
             if (!_runtimeIntValues.ContainsKey(key))
             {
                 Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the int dictionary !");
-                return -1;
+                value = -1;
+                return false;
             }
             
 #if UNITY_EDITOR
             TrackKeyUsage(key);
 #endif
 
-            return _runtimeIntValues[key];
+            value = _runtimeIntValues[key];
+            return true;
+        }
+
+        #endregion
+
+        #region Listener Methods
+
+        public void AddListener(IRemoteConfigListener l)
+        {
+            if (!_listeners.Contains(l))
+            {
+                _listeners.Add(l);
+            }
+        }
+
+        public void RemoveListener(IRemoteConfigListener l)
+        {
+            int i = _listeners.FindIndex(x => x == l);
+            if (i >= 0)
+            {
+                _listeners.RemoveAt(i);
+            }
+        }
+
+        private void NotifyRemoteConfigLoaded()
+        {
+            foreach (var l in _listeners)
+            {
+                l.OnRemoteConfigLoaded();
+            }
+        }
+
+        private void NotifyRemoteConfigLanguageSelected()
+        {
+            foreach (var l in _listeners)
+            {
+                l.OnRemoteConfigLanguageSelected();
+            }
         }
 
         #endregion

@@ -477,6 +477,7 @@ namespace CCLBStudio.RemoteConfig
 
         private void OnDownloadSucceeded()
         {
+            Debug.Log("Successfully downloaded file !");
             _isDownloading = false;
             RefreshDrawingData();
         }

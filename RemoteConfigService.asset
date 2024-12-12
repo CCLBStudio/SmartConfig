@@ -13,7 +13,9 @@ MonoBehaviour:
   m_Name: RemoteConfigService
   m_EditorClassIdentifier: 
   keyUses: []
+  autoInitialize: 1
+  onInitialized: 0
   transferStrategy: {fileID: 0}
   defaultLanguage: 10
   localTranslationFile: {fileID: 4900000, guid: 72242299064add241b416ece9fdb7a0d, type: 3}
-  existingLanguages: 0e0000000a000000
+  existingLanguages: 0a0000000e000000

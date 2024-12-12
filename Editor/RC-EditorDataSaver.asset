@@ -13,11 +13,7 @@ MonoBehaviour:
   m_Name: RC-EditorDataSaver
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
-  allLanguages:
-  - language: 10
-    flag: {fileID: 2800000, guid: c4122cc3c5850dd45b66a68413e94497, type: 3}
-  - language: 14
-    flag: {fileID: 2800000, guid: 89b171912e3b3e24086e7d3b3822919e, type: 3}
+  allLanguages: []
   allCategories: []
   platformEntries:
   - key: 11
@@ -32,11 +28,7 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 0.1.0
       floatValue: 0
-      translatableValue:
-      - key: 10
-        value: 
-      - key: 14
-        value: 
+      translatableValue: []
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_review_versions
@@ -49,11 +41,7 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 0.0.0
       floatValue: 0
-      translatableValue:
-      - key: 10
-        value: 
-      - key: 14
-        value: 
+      translatableValue: []
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_maintenance_mode_enabled
@@ -66,11 +54,7 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 
       floatValue: 0
-      translatableValue:
-      - key: 10
-        value: 
-      - key: 14
-        value: 
+      translatableValue: []
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_update_url
@@ -83,45 +67,7 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 
       floatValue: 0
-      translatableValue:
-      - key: 10
-        value: 
-      - key: 14
-        value: 
+      translatableValue: []
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
-  allAppEntries:
-  - key: app_my_int
-    type: 0
-    category: 
-    categoryIndex: 0
-    respectCategoryPrefix: 1
-    isValid: 1
-    intValue: 50
-    boolValue: 0
-    stringValue: 
-    floatValue: 0
-    translatableValue:
-    - key: 10
-      value: 
-    - key: 14
-      value: 
-    editorData: {fileID: 11400000}
-    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
-  - key: app_my_translatable
-    type: 4
-    category: 
-    categoryIndex: 0
-    respectCategoryPrefix: 1
-    isValid: 1
-    intValue: 0
-    boolValue: 0
-    stringValue: 
-    floatValue: 0
-    translatableValue:
-    - key: 10
-      value: Hello world !
-    - key: 14
-      value: Bonjour le monde !
-    editorData: {fileID: 11400000}
-    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  allAppEntries: []
