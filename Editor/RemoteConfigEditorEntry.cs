@@ -205,7 +205,7 @@ namespace CCLBStudio.RemoteConfig
 
         private float GetDefaultHeight() => editSettings.lineHeight + editSettings.boxBorderOffset * 2;
 
-        private float GetTranslatableHeight() => isValid ? translatableValue.Count * editSettings.lineHeight + (translatableValue.Count - 1) * EditorGUIUtility.standardVerticalSpacing + editSettings.boxBorderOffset * 2 : GetDefaultHeight();
+        private float GetTranslatableHeight() =>Mathf.Max(GetDefaultHeight(),  isValid ? translatableValue.Count * editSettings.lineHeight + (translatableValue.Count - 1) * EditorGUIUtility.standardVerticalSpacing + editSettings.boxBorderOffset * 2 : GetDefaultHeight());
 
         private void DrawIntField(ref Rect rect, bool shouldDraw)
         {
@@ -255,20 +255,27 @@ namespace CCLBStudio.RemoteConfig
             float startRectPosY = rect.y;
             float startY = rect.y + rect.height / 3f;
 
-            foreach (var lang in editorData.allLanguages)
+            if (editorData.allLanguages.Count <= 0)
             {
-                float rectOffset = index * (rect.height + EditorGUIUtility.standardVerticalSpacing);
-                _langLabelRect.y = startY + rectOffset;
-                rect.y = startRectPosY + rectOffset;
-                
-                if (shouldDraw)
+                EditorGUI.HelpBox(rect, "No language added !", MessageType.Warning);
+            }
+            else
+            {
+                foreach (var lang in editorData.allLanguages)
                 {
-                    EditorGUI.LabelField(_langLabelRect, GetCultureInfo(lang.language).TwoLetterISOLanguageName.ToUpper());
-                    int i = translatableValue.FindIndex(x => x.Key == lang.language);
-                    EditorGUI.TextArea(rect, translatableValue[i].Value, EditorStyles.textArea);
-                }
+                    float rectOffset = index * (rect.height + EditorGUIUtility.standardVerticalSpacing);
+                    _langLabelRect.y = startY + rectOffset;
+                    rect.y = startRectPosY + rectOffset;
+                
+                    if (shouldDraw)
+                    {
+                        EditorGUI.LabelField(_langLabelRect, GetCultureInfo(lang.language).TwoLetterISOLanguageName.ToUpper());
+                        int i = translatableValue.FindIndex(x => x.Key == lang.language);
+                        translatableValue[i].Value = EditorGUI.TextArea(rect, translatableValue[i].Value, EditorStyles.textArea);
+                    }
 
-                index++;
+                    index++;
+                }
             }
         }
 

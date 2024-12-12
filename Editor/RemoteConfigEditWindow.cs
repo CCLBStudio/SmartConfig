@@ -35,6 +35,7 @@ namespace CCLBStudio.RemoteConfig
         private RemoteConfigEditorData _editorData;
         private Dictionary<RuntimePlatform, bool> _platformFoldouts;
         private List<RemoteConfigEditorEntry> _entriesToDraw;
+        private RuntimePlatform? _platformToAdd = null;
 
         private GUIStyle _columnsLabelStyle;
         private GUIStyle _headerButtonsLabelStyle;
@@ -685,6 +686,12 @@ namespace CCLBStudio.RemoteConfig
             }
             
             EditorGUI.indentLevel--;
+
+            if (_platformToAdd != null)
+            {
+                _editorData.AddNewPlatform(_platformToAdd.Value);
+                _platformToAdd = null;
+            }
         }
 
         private void AddPlatform(object runtimePlatform)
@@ -700,7 +707,7 @@ namespace CCLBStudio.RemoteConfig
                 return;
             }
 
-            _editorData.AddNewPlatform(platform);
+            _platformToAdd = platform;
         }
 
         private void DrawPlatformEntry(RuntimePlatform platform, RemoteConfigEditorEntry entry, int index)

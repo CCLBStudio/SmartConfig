@@ -145,12 +145,21 @@ namespace CCLBStudio.RemoteConfig
         #endregion
 
         public SystemLanguage CurrentLanguage => _currentlySelectedLanguage ?? defaultLanguage;
+        public List<SystemLanguage> ExistingLanguages => existingLanguages;
         public const string FileName = "RemoteConfig.json";
         public RemoteConfigTransferStrategy TransferStrategy => transferStrategy;
 
+        [Tooltip("If TRUE, the service with automatically initialize itself during the OnEnable event.")]
+        [SerializeField] private bool autoInitialize = true;
+        [Tooltip("Determine what action will be performed when the service is initialized. None = nothing, LoadFromCloud = download the remote file and load it, LoadFromLocalFile = loading from the local json file.")]
+        [SerializeField] private InitializeAction onInitialized = InitializeAction.None;
+        [Tooltip("The script holding your logic to upload/download your json file. See documentation for more information.")]
         [SerializeField] private RemoteConfigTransferStrategy transferStrategy;
+        [Tooltip("The default language to use if none has been specified with the SelectLanguage() method.")]
         [SerializeField] private SystemLanguage defaultLanguage = SystemLanguage.English;
+        [Tooltip("You local json file.")]
         [SerializeField] private TextAsset localTranslationFile;
+        [Tooltip("A list holding all the languages present in your last loaded json file. Purely informative.")]
         [SerializeField] private List<SystemLanguage> existingLanguages;
 
         [NonSerialized] private Dictionary<string, int> _runtimeIntValues;
@@ -160,6 +169,20 @@ namespace CCLBStudio.RemoteConfig
         [NonSerialized] private RemoteConfigData _runtimeRc;
         [NonSerialized] private SystemLanguage? _currentlySelectedLanguage;
         [NonSerialized] private SystemLanguage _currentlyTranslatedLanguage;
+        
+        private enum InitializeAction {None, LoadFromCloud, LoadFromLocalFile}
+
+        #region Unity Events
+
+        private void OnEnable()
+        {
+            if (autoInitialize)
+            {
+                Initialize();
+            }
+        }
+
+        #endregion
 
         #region Initialization
 
@@ -173,13 +196,27 @@ namespace CCLBStudio.RemoteConfig
             _runtimeRc = null;
             _currentlySelectedLanguage = null;
             _currentlyTranslatedLanguage = SystemLanguage.Unknown;
+
+            switch (onInitialized)
+            {
+                case InitializeAction.None:
+                    break;
+                
+                case InitializeAction.LoadFromCloud:
+                    LoadFromCloud(null, null, null);
+                    break;
+                
+                case InitializeAction.LoadFromLocalFile:
+                    LoadFromLocalFile();
+                    break;
+            }
         }
 
         #endregion
 
         #region Loading Methods
 
-        public void LoadRemoteConfig(Action onSuccess, Action onFail)
+        public void LoadFromCloud(Action<float> onProgress, Action onSuccess, Action onFail)
         {
             if (!transferStrategy)
             {
@@ -188,7 +225,7 @@ namespace CCLBStudio.RemoteConfig
                 return;
             }
             
-            transferStrategy.DownloadJson(null
+            transferStrategy.DownloadJson(onProgress
                 , json =>
                 {
                     OnRemoteConfigFetched(json);
@@ -225,16 +262,27 @@ namespace CCLBStudio.RemoteConfig
                 return false;
             }
             
+            LoadFromLocalFile();
+            return true;
+        }
+
+        public void LoadFromLocalFile()
+        {
+            if (!localTranslationFile)
+            {
+                Debug.LogError("--- REMOTE CONFIG --- No local translation file, unable to load local remote config !");
+                return;
+            }
+            
             _runtimeRc = new RemoteConfigData(localTranslationFile.text);
             LoadFrom(_runtimeRc);
-            return true;
         }
 
         private void LoadPlatformSettings(RemoteConfigData rc)
         {
             if (!rc.platformEntries.ContainsKey(Application.platform))
             {
-                Debug.LogError($"--- REMOTE CONFIG --- No platform settings form current platform {Application.platform} !");
+                Debug.Log($"--- REMOTE CONFIG --- No platform settings form current platform {Application.platform} !");
                 return;
             }
 
