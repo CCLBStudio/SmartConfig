@@ -233,7 +233,7 @@ namespace CCLBStudio.RemoteConfig
         private void SetupSortingCategories()
         {
             _sortingCategories = new string[_editorData.allCategories.Count + 1];
-            _sortingCategories[0] = "Default";
+            _sortingCategories[0] = "None";
             for (int i = 0; i < _editorData.allCategories.Count; i++)
             {
                 _sortingCategories[i + 1] = _editorData.allCategories[i].Key;
