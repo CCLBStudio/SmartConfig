@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
 {
-    [CustomEditor(typeof(RemoteConfigService))]
+    [CustomEditor(typeof(SmartConfigService))]
     public class RemoteConfigServiceEditor : Editor
     {
         private SerializedProperty _defaultLanguage;
@@ -17,12 +17,12 @@ namespace CCLBStudio.SmartConfig
     
         private void OnEnable()
         {
-            _defaultLanguage = serializedObject.FindProperty(RemoteConfigService.DefaultLanguageProperty);
-            _localTranslationFile = serializedObject.FindProperty(RemoteConfigService.LocalTranslationFileProperty);
-            _existingLanguages = serializedObject.FindProperty(RemoteConfigService.ExistingLanguagesProperty);
+            _defaultLanguage = serializedObject.FindProperty(SmartConfigService.DefaultLanguageProperty);
+            _localTranslationFile = serializedObject.FindProperty(SmartConfigService.LocalTranslationFileProperty);
+            _existingLanguages = serializedObject.FindProperty(SmartConfigService.ExistingLanguagesProperty);
 
-            _remainingProperties = RcEditorExtender.GetSelfPropertiesExcluding(serializedObject, RemoteConfigService.DefaultLanguageProperty,
-                RemoteConfigService.LocalTranslationFileProperty, RemoteConfigService.ExistingLanguagesProperty);
+            _remainingProperties = RcEditorExtender.GetSelfPropertiesExcluding(serializedObject, SmartConfigService.DefaultLanguageProperty,
+                SmartConfigService.LocalTranslationFileProperty, SmartConfigService.ExistingLanguagesProperty);
         }
     
         public override void OnInspectorGUI()

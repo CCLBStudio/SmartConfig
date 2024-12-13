@@ -10,7 +10,7 @@ namespace CCLBStudio.SmartConfig
 {
     public class RemoteConfigEditWindow : EditorWindow
     {
-        private RemoteConfigService _remoteConfigService;
+        private SmartConfigService _smartConfigService;
         private RemoteConfigEditWindowSettings _settings;
         [NonSerialized] private bool _init;
         
@@ -93,7 +93,7 @@ namespace CCLBStudio.SmartConfig
 
         private void OnEnable()
         {
-            _remoteConfigService = RcEditorExtender.LoadScriptableAsset<RemoteConfigService>();
+            _smartConfigService = RcEditorExtender.LoadScriptableAsset<SmartConfigService>();
             _editorData = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditorData>();
             _settings = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
 
@@ -186,9 +186,9 @@ namespace CCLBStudio.SmartConfig
 
         private bool CheckAssets()
         {
-            if (!_remoteConfigService)
+            if (!_smartConfigService)
             {
-                _remoteConfigService = RcEditorExtender.LoadScriptableAsset<RemoteConfigService>();
+                _smartConfigService = RcEditorExtender.LoadScriptableAsset<SmartConfigService>();
                 EditorGUILayout.HelpBox("Unable to load the Remote Config Service !", MessageType.Error);
                 return false;
             }
@@ -210,7 +210,7 @@ namespace CCLBStudio.SmartConfig
             //     return false;
             // }
 
-            if (!_remoteConfigService.LocalTranslationFile)
+            if (!_smartConfigService.LocalTranslationFile)
             {
                 EditorGUILayout.HelpBox("There is no local translation file. This file holds all the remote config data for the current version and is what will be uploaded on the server. Click the button below to create a empty one.", MessageType.Warning);
                 if (GUILayout.Button("Create Empty Json"))
@@ -377,7 +377,7 @@ namespace CCLBStudio.SmartConfig
             GUI.enabled = !(_isUploading || _isDownloading);
             if (GUILayout.Button(_syncFromCloudContent, _commonHeaderButtonStyle))
             {
-                if (!_remoteConfigService.TransferStrategy)
+                if (!_smartConfigService.TransferStrategy)
                 {
                     EditorUtility.DisplayDialog("No Transfer Strategy !", "There is no transfer strategy binded in your remote config service. Please create and bind one to perform upload / download.", "Ok");
                 }
@@ -421,7 +421,7 @@ namespace CCLBStudio.SmartConfig
             GUI.enabled = !(_isUploading || _isDownloading);
             if (GUILayout.Button(_uploadContent, _commonHeaderButtonStyle))
             {
-                if (!_remoteConfigService.TransferStrategy)
+                if (!_smartConfigService.TransferStrategy)
                 {
                     EditorUtility.DisplayDialog("No Transfer Strategy !", "There is no transfer strategy binded in your remote config service. Please create and bind one to perform upload / download.", "Ok");
                 }
@@ -463,7 +463,7 @@ namespace CCLBStudio.SmartConfig
             GUILayout.Label("Local Sync", _headerButtonsLabelStyle, GUILayout.Width(_settings.headerButtonWidth));
             if (GUILayout.Button(_syncFromJsonContent, _commonHeaderButtonStyle))
             {
-                var rc = new RemoteConfigData(_remoteConfigService.LocalTranslationFile.text);
+                var rc = new RemoteConfigData(_smartConfigService.LocalTranslationFile.text);
                 _editorData.LoadFrom(rc);
                 RefreshDrawingData();
             }
@@ -934,14 +934,14 @@ namespace CCLBStudio.SmartConfig
                 
                 addedEntries.Add(editorEntry.key, editorEntry);
                 
-                int index = _remoteConfigService.keyUses.FindIndex(x => x.Key == editorEntry.key);
+                int index = _smartConfigService.keyUses.FindIndex(x => x.Key == editorEntry.key);
                 if (index < 0)
                 {
                     _usageReportEntries[0].Add(editorEntry);
                     continue;
                 }
 
-                var trackedPair = _remoteConfigService.keyUses[index];
+                var trackedPair = _smartConfigService.keyUses[index];
                 if (_usageReportEntries.TryGetValue(trackedPair.Value, out var editorEntries))
                 {
                     editorEntries.Add(editorEntry);
@@ -1395,22 +1395,22 @@ namespace CCLBStudio.SmartConfig
 
         private void CreateAndBindEmptyJson()
         {
-            string servicePath = AssetDatabase.GetAssetPath(_remoteConfigService);
+            string servicePath = AssetDatabase.GetAssetPath(_smartConfigService);
             string directoryPath = Path.GetDirectoryName(servicePath);
-            string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, RemoteConfigService.FileName));
+            string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, SmartConfigService.FileName));
             
             string absolutePath = RcIOExtender.RelativeToAbsolutePath(projectRelativePath);
             File.WriteAllText(absolutePath, "{\n \"version\": 1,\n \"platforms\": [], \n \"entries\": [] \n}");
             
             AssetDatabase.Refresh();
 
-            _remoteConfigService.LocalTranslationFile = AssetDatabase.LoadAssetAtPath<TextAsset>(projectRelativePath);
-            Save(_remoteConfigService);
+            _smartConfigService.LocalTranslationFile = AssetDatabase.LoadAssetAtPath<TextAsset>(projectRelativePath);
+            Save(_smartConfigService);
         }
 
         private void CreateAndBindEditorDataSaver()
         {
-            string servicePath = AssetDatabase.GetAssetPath(_remoteConfigService);
+            string servicePath = AssetDatabase.GetAssetPath(_smartConfigService);
             string directoryPath = Path.GetDirectoryName(servicePath) + "/Editor";
             string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, "RC-EditorDataSaver.asset"));
 

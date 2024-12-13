@@ -6,7 +6,7 @@ namespace CCLBStudio.SmartConfig
     [RequireComponent(typeof(TextMeshProUGUI))]
     public class RemoteConfigText : MonoBehaviour, IRemoteConfigListener
     {
-        [SerializeField] private RemoteConfigService service;
+        [SerializeField] private SmartConfigService service;
         [SerializeField] private string key;
         private TextMeshProUGUI _tmPro;
 

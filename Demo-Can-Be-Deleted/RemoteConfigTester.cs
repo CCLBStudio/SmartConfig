@@ -5,7 +5,7 @@ namespace CCLBStudio.SmartConfig.Demo
 {
     public class RemoteConfigTester : MonoBehaviour
     {
-        [SerializeField] private RemoteConfigService service;
+        [SerializeField] private SmartConfigService service;
         [SerializeField] private SystemLanguage language;
         [SerializeField] private TextMeshProUGUI text;
     

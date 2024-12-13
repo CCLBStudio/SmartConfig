@@ -7,7 +7,7 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [CreateAssetMenu(fileName = "RemoteConfigService", menuName = "CCLB Studio/Remote Config/Service SO")]
-    public class RemoteConfigService : ScriptableObject
+    public class SmartConfigService : ScriptableObject
     {
 #region Editor Properties
 #if UNITY_EDITOR

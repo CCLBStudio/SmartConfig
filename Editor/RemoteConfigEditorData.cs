@@ -773,9 +773,9 @@ namespace CCLBStudio.SmartConfig
             AssetDatabase.SaveAssetIfDirty(this);
         }
 
-        private RemoteConfigService GetRcService()
+        private SmartConfigService GetRcService()
         {
-            var service = RcEditorExtender.LoadScriptableAsset<RemoteConfigService>();
+            var service = RcEditorExtender.LoadScriptableAsset<SmartConfigService>();
             if (!service || !service.LocalTranslationFile)
             {
                 Debug.LogError("Problem with remote config service ! Unable to write the json file.");
