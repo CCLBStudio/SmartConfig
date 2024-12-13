@@ -10,12 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e2fc3472e1375724ca22d8c793a9e9d2, type: 3}
-  m_Name: RemoteConfigService
+  m_Name: RemoteConfigService-SO
   m_EditorClassIdentifier: 
-  keyUses: []
+  keyUses:
+  - key: my_awesome_key_1
+    value: 15
   autoInitialize: 1
   onInitialized: 0
-  transferStrategy: {fileID: 0}
+  transferStrategy: {fileID: 11400000, guid: 8eed11f41db556a4bb7dbc729c8652d6, type: 2}
   defaultLanguage: 10
   localTranslationFile: {fileID: 4900000, guid: 72242299064add241b416ece9fdb7a0d, type: 3}
-  existingLanguages: 0a0000000e000000
+  existingLanguages: 0e0000000a000000

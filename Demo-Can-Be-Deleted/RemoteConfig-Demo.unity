@@ -432,7 +432,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   service: {fileID: 11400000, guid: ec2cf898c4320994aad195ca0cf2e607, type: 2}
-  key: app_my_translatable
+  key: my_awesome_key_1
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -678,8 +678,8 @@ RectTransform:
 SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
+  - {fileID: 1559756182}
   - {fileID: 963194228}
   - {fileID: 705507995}
-  - {fileID: 1559756182}
   - {fileID: 1564253824}
   - {fileID: 120829587}

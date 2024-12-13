@@ -29,7 +29,6 @@ namespace CCLBStudio.RemoteConfig
         private delegate void DrawingDelegate(ref Rect rect, bool shouldDraw);
         private DrawingDelegate _drawingMethod;
         private Func<float> _valueHeight;
-        private Dictionary<SystemLanguage, CultureInfo> _languageCultureInfos;
         private Rect _langLabelRect;
 
         public RemoteConfigEditorEntry(RemoteConfigValueType type, RemoteConfigEditorData editorData)
@@ -68,7 +67,6 @@ namespace CCLBStudio.RemoteConfig
                     break;
                 
                 case RemoteConfigValueType.Translatable:
-                    //translatableValue = new SerializableDictionary<SystemLanguage, string>(((RemoteConfigTranslatableEntry)entry).value);
                     translatableValue = new List<RemoteConfigKeyValuePair<SystemLanguage, string>>();
                     var translatableEntry = (RemoteConfigTranslatableEntry)entry;
                     foreach (var pair in translatableEntry.value)
@@ -147,7 +145,7 @@ namespace CCLBStudio.RemoteConfig
                     break;
                 
                 case RemoteConfigValueType.Translatable:
-                    _langLabelRect = new Rect(0f, 0f, 25f, 20f);
+                    _langLabelRect = new Rect(0f, 0f, 25f, 25f * 0.6667f);
                     _drawingMethod = DrawTranslatableField;
                     _valueHeight = GetTranslatableHeight;
                     break;
@@ -253,7 +251,7 @@ namespace CCLBStudio.RemoteConfig
             rect.height = editSettings.lineHeight;
 
             float startRectPosY = rect.y;
-            float startY = rect.y + rect.height / 3f;
+            float startY = rect.y + rect.height / 4f;
 
             if (editorData.allLanguages.Count <= 0)
             {
@@ -261,7 +259,7 @@ namespace CCLBStudio.RemoteConfig
             }
             else
             {
-                foreach (var lang in editorData.allLanguages)
+                foreach (RemoteConfigEditorLanguage lang in editorData.allLanguages)
                 {
                     float rectOffset = index * (rect.height + EditorGUIUtility.standardVerticalSpacing);
                     _langLabelRect.y = startY + rectOffset;
@@ -269,7 +267,12 @@ namespace CCLBStudio.RemoteConfig
                 
                     if (shouldDraw)
                     {
-                        EditorGUI.LabelField(_langLabelRect, GetCultureInfo(lang.language).TwoLetterISOLanguageName.ToUpper());
+                        EditorGUI.LabelField(_langLabelRect, lang.twoLettersIsoDisplay);
+                        _langLabelRect.y += _langLabelRect.height;
+                        _langLabelRect.x -= 4f;
+                        EditorGUI.DrawPreviewTexture(_langLabelRect, lang.flag);
+                        _langLabelRect.x += 4f;
+
                         int i = translatableValue.FindIndex(x => x.Key == lang.language);
                         translatableValue[i].Value = EditorGUI.TextArea(rect, translatableValue[i].Value, EditorStyles.textArea);
                     }
@@ -277,27 +280,6 @@ namespace CCLBStudio.RemoteConfig
                     index++;
                 }
             }
-        }
-
-        private CultureInfo GetCultureInfo(SystemLanguage lang)
-        {
-            _languageCultureInfos ??= new Dictionary<SystemLanguage, CultureInfo>(editorData.allLanguages.Count);
-            
-            if (!_languageCultureInfos.ContainsKey(lang))
-            {
-                var infos = lang.ToCultureInfo();
-                _languageCultureInfos.Add(lang, infos);
-                return infos;
-            }
-            
-            if (_languageCultureInfos[lang] == null)
-            {
-                var infos = lang.ToCultureInfo();
-                _languageCultureInfos[lang] = infos;
-                return infos;
-            }
-
-            return _languageCultureInfos[lang];
         }
 
         #endregion

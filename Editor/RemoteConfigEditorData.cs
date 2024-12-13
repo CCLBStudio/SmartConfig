@@ -67,7 +67,8 @@ namespace CCLBStudio.RemoteConfig
                 allLanguages.Add(new RemoteConfigEditorLanguage
                 {
                     language = lang,
-                    flag = settings.languageFlags.Find(x => x.Key == lang)?.Value
+                    flag = settings.languageFlags.Find(x => x.Key == lang)?.Value,
+                    twoLettersIsoDisplay = lang.ToCultureInfo().TwoLetterISOLanguageName.ToUpper()
                 });
             }
 
@@ -349,7 +350,8 @@ namespace CCLBStudio.RemoteConfig
             var newLang = new RemoteConfigEditorLanguage
             {
                 language = newLanguage,
-                flag = settings.languageFlags.Find(x => x.Key == newLanguage)?.Value
+                flag = settings.languageFlags.Find(x => x.Key == newLanguage)?.Value,
+                twoLettersIsoDisplay = newLanguage.ToCultureInfo().TwoLetterISOLanguageName.ToUpper()
             };
             
             allLanguages.Add(newLang);

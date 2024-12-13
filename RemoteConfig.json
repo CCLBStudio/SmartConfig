@@ -31,5 +31,33 @@
       ]
     }
   ],
-  "entries": []
+  "entries": [
+    {
+      "key": "my_awesome_key_1",
+      "type": "Translatable",
+      "value": {
+        "French": "Bonjour le monde !",
+        "English": "Hello world !"
+      },
+      "category": ""
+    },
+    {
+      "key": "my_awesome_key_2",
+      "type": "Int",
+      "value": 10,
+      "category": ""
+    },
+    {
+      "key": "my_awesome_key_3",
+      "type": "Bool",
+      "value": true,
+      "category": ""
+    },
+    {
+      "key": "my_awesome_key_4",
+      "type": "String",
+      "value": "Epic text !",
+      "category": ""
+    }
+  ]
 }

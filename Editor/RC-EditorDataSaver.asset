@@ -13,7 +13,13 @@ MonoBehaviour:
   m_Name: RC-EditorDataSaver
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
-  allLanguages: []
+  allLanguages:
+  - language: 14
+    twoLettersIsoDisplay: FR
+    flag: {fileID: 2800000, guid: 89b171912e3b3e24086e7d3b3822919e, type: 3}
+  - language: 10
+    twoLettersIsoDisplay: EN
+    flag: {fileID: 2800000, guid: c4122cc3c5850dd45b66a68413e94497, type: 3}
   allCategories: []
   platformEntries:
   - key: 11
@@ -28,7 +34,11 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 0.1.0
       floatValue: 0
-      translatableValue: []
+      translatableValue:
+      - key: 14
+        value: 
+      - key: 10
+        value: 
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_review_versions
@@ -41,7 +51,11 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 0.0.0
       floatValue: 0
-      translatableValue: []
+      translatableValue:
+      - key: 14
+        value: 
+      - key: 10
+        value: 
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_maintenance_mode_enabled
@@ -54,7 +68,11 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 
       floatValue: 0
-      translatableValue: []
+      translatableValue:
+      - key: 14
+        value: 
+      - key: 10
+        value: 
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_update_url
@@ -67,7 +85,79 @@ MonoBehaviour:
       boolValue: 0
       stringValue: 
       floatValue: 0
-      translatableValue: []
+      translatableValue:
+      - key: 14
+        value: 
+      - key: 10
+        value: 
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
-  allAppEntries: []
+  allAppEntries:
+  - key: my_awesome_key_1
+    type: 4
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 0
+    boolValue: 0
+    stringValue: 
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: Bonjour le monde !
+    - key: 10
+      value: Hello world !
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  - key: my_awesome_key_2
+    type: 0
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 10
+    boolValue: 0
+    stringValue: 
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: 
+    - key: 10
+      value: 
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  - key: my_awesome_key_3
+    type: 2
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 0
+    boolValue: 1
+    stringValue: 
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: 
+    - key: 10
+      value: 
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  - key: my_awesome_key_4
+    type: 3
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 0
+    boolValue: 0
+    stringValue: Epic text !
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: 
+    - key: 10
+      value: 
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}

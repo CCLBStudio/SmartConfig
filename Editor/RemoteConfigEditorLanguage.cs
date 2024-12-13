@@ -7,6 +7,7 @@ namespace CCLBStudio.RemoteConfig
     public class RemoteConfigEditorLanguage
     {
         public SystemLanguage language;
+        public string twoLettersIsoDisplay;
         public Texture flag;
     }
 }
