@@ -1,6 +1,6 @@
 using System;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     [Serializable]
     public class RemoteConfigStringEntry : RemoteConfigEntry

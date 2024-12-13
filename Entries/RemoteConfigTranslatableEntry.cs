@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     [Serializable]
     public class RemoteConfigTranslatableEntry : RemoteConfigEntry

@@ -4,7 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     [Serializable]
     public class RemoteConfigJson

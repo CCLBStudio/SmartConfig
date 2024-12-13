@@ -2,7 +2,7 @@ using System;
 using System.Globalization;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     public static class SystemLanguageExtender
     {

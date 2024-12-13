@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     [CreateAssetMenu(fileName = "RemoteConfigService", menuName = "CCLB Studio/Remote Config/Service SO")]
     public class RemoteConfigService : ScriptableObject

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     [CustomEditor(typeof(RemoteConfigService))]
     public class RemoteConfigServiceEditor : Editor

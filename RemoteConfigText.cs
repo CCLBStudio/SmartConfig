@@ -1,53 +1,55 @@
-using CCLBStudio.RemoteConfig;
 using TMPro;
 using UnityEngine;
 
-[RequireComponent(typeof(TextMeshProUGUI))]
-public class RemoteConfigText : MonoBehaviour, IRemoteConfigListener
+namespace CCLBStudio.SmartConfig
 {
-    [SerializeField] private RemoteConfigService service;
-    [SerializeField] private string key;
-    private TextMeshProUGUI _tmPro;
-
-    protected void Start()
+    [RequireComponent(typeof(TextMeshProUGUI))]
+    public class RemoteConfigText : MonoBehaviour, IRemoteConfigListener
     {
-        if (!service)
+        [SerializeField] private RemoteConfigService service;
+        [SerializeField] private string key;
+        private TextMeshProUGUI _tmPro;
+
+        protected void Start()
         {
-            Debug.LogError("Remote Config Service is null !");
-            Destroy(this);
-            return;
-        }
+            if (!service)
+            {
+                Debug.LogError("Remote Config Service is null !");
+                Destroy(this);
+                return;
+            }
         
-        _tmPro = GetComponent<TextMeshProUGUI>();
-        ApplyRemoteConfigKey();
-        service.AddListener(this);
-    }
-
-    private void OnDestroy()
-    {
-        service.RemoveListener(this);
-    }
-
-    private void ApplyRemoteConfigKey()
-    {
-        if (!_tmPro || !service)
-        {
-            Debug.LogError("Can't translate text !");
-            return;
+            _tmPro = GetComponent<TextMeshProUGUI>();
+            ApplyRemoteConfigKey();
+            service.AddListener(this);
         }
 
-        if (service.GetString(key, out string value))
+        private void OnDestroy()
         {
-            _tmPro.text = value;
+            service.RemoveListener(this);
         }
-    }
 
-    public void OnRemoteConfigLoaded()
-    {
-    }
+        private void ApplyRemoteConfigKey()
+        {
+            if (!_tmPro || !service)
+            {
+                Debug.LogError("Can't translate text !");
+                return;
+            }
 
-    public void OnRemoteConfigLanguageSelected()
-    {
-        ApplyRemoteConfigKey();
+            if (service.GetString(key, out string value))
+            {
+                _tmPro.text = value;
+            }
+        }
+
+        public void OnRemoteConfigLoaded()
+        {
+        }
+
+        public void OnRemoteConfigLanguageSelected()
+        {
+            ApplyRemoteConfigKey();
+        }
     }
 }

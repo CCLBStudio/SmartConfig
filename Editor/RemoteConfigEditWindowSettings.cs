@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     [CreateAssetMenu(fileName = "NewRemoteConfigEditSettings", menuName = "CCLB Studio/Remote Config/Editor/Settings")]
     public class RemoteConfigEditWindowSettings : ScriptableObject

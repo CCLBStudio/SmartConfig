@@ -1,7 +1,7 @@
 using System.IO;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     public static class RcIOExtender
     {

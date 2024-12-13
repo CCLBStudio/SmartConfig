@@ -1,4 +1,4 @@
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     public interface IRemoteConfigListener
     {

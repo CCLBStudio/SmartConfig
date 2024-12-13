@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-namespace CCLBStudio.RemoteConfig
+namespace CCLBStudio.SmartConfig
 {
     /// <summary>
     /// Abstract script holding the methods to override for custom upload/download logic. Create a script inheriting from this one, override the methods and link an instance of your custom script in the RemoteConfigService.
