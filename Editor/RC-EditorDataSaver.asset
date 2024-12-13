@@ -16,9 +16,11 @@ MonoBehaviour:
   allLanguages:
   - language: 14
     twoLettersIsoDisplay: FR
+    languageName: French
     flag: {fileID: 2800000, guid: 89b171912e3b3e24086e7d3b3822919e, type: 3}
   - language: 10
     twoLettersIsoDisplay: EN
+    languageName: English
     flag: {fileID: 2800000, guid: c4122cc3c5850dd45b66a68413e94497, type: 3}
   allCategories: []
   platformEntries:
@@ -153,6 +155,40 @@ MonoBehaviour:
     intValue: 0
     boolValue: 0
     stringValue: Epic text !
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: 
+    - key: 10
+      value: 
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  - key: my_awesome_key_5
+    type: 4
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 0
+    boolValue: 0
+    stringValue: 
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: 
+    - key: 10
+      value: 
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  - key: my_awesome_key_6
+    type: 4
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 0
+    boolValue: 0
+    stringValue: 
     floatValue: 0
     translatableValue:
     - key: 14

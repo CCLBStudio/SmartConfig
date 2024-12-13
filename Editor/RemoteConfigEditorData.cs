@@ -68,7 +68,8 @@ namespace CCLBStudio.SmartConfig
                 {
                     language = lang,
                     flag = settings.languageFlags.Find(x => x.Key == lang)?.Value,
-                    twoLettersIsoDisplay = lang.ToCultureInfo().TwoLetterISOLanguageName.ToUpper()
+                    twoLettersIsoDisplay = lang.ToCultureInfo().TwoLetterISOLanguageName.ToUpper(),
+                    languageName = ObjectNames.NicifyVariableName(lang.ToString())
                 });
             }
 
@@ -351,7 +352,8 @@ namespace CCLBStudio.SmartConfig
             {
                 language = newLanguage,
                 flag = settings.languageFlags.Find(x => x.Key == newLanguage)?.Value,
-                twoLettersIsoDisplay = newLanguage.ToCultureInfo().TwoLetterISOLanguageName.ToUpper()
+                twoLettersIsoDisplay = newLanguage.ToCultureInfo().TwoLetterISOLanguageName.ToUpper(),
+                languageName = ObjectNames.NicifyVariableName(newLanguage.ToString())
             };
             
             allLanguages.Add(newLang);

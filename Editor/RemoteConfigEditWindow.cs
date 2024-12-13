@@ -299,8 +299,8 @@ namespace CCLBStudio.SmartConfig
 
             _deleteLanguageButtonStyle = new GUIStyle(GUI.skin.button)
             {
-                fixedHeight = _settings.languageLineHeight,
-                fixedWidth = _settings.languageLineHeight,
+                fixedHeight = _settings.languageElementHeight,
+                fixedWidth = _settings.languageElementHeight,
                 padding = new RectOffset(3,3,3,3)
             };
 
@@ -552,12 +552,33 @@ namespace CCLBStudio.SmartConfig
 
         private void DrawLanguagesContent()
         {
+            float labelWidth = EditorGUIUtility.labelWidth;
             EditorGUI.indentLevel++;
+            int x = 0;
 
             for (int i = 0; i < _editorData.allLanguages.Count; i++)
             {
+                if (x == 0)
+                {
+                    GUILayout.BeginHorizontal();
+                }
                 DrawLanguageEntry(i);
+                x++;
+                if (x >= 4)
+                {
+                    GUILayout.FlexibleSpace();
+                    GUILayout.EndHorizontal();
+                    x = 0;
+                }
             }
+
+            if (x != 0)
+            {
+                GUILayout.FlexibleSpace();
+                GUILayout.EndHorizontal();
+            }
+
+            EditorGUIUtility.labelWidth = labelWidth;
 
             if (GUILayout.Button("+ Add New Language"))
             {
@@ -604,7 +625,8 @@ namespace CCLBStudio.SmartConfig
                 {
                     GUILayout.Label(_editorData.allLanguages[index].flag, GUILayout.Height(_deleteLanguageButtonStyle.fixedHeight), GUILayout.Width(50));
                 }
-                GUILayout.Label(_editorData.allLanguages[index].language.ToString(), _languageStyle, GUILayout.Height(_settings.languageLineHeight));
+                
+                GUILayout.Label(_editorData.allLanguages[index].languageName, _languageStyle, GUILayout.Height(_settings.languageElementHeight), GUILayout.Width(_settings.languageElementWidth));
             }
             
             GUILayout.EndHorizontal();
@@ -637,6 +659,8 @@ namespace CCLBStudio.SmartConfig
             }
 
             EditorGUI.indentLevel++;
+            
+            _scrollPos = GUILayout.BeginScrollView(_scrollPos);
             for(int i = 0; i < _editorData.platformEntries.Count; i++)
             {
                 var pair = _editorData.platformEntries[i];
@@ -673,7 +697,7 @@ namespace CCLBStudio.SmartConfig
                     GUILayout.EndHorizontal();
                 }
             }
-
+            
             if (GUILayout.Button("+ Add New Platform"))
             {
                 GenericMenu menu = new GenericMenu();
@@ -686,6 +710,8 @@ namespace CCLBStudio.SmartConfig
                 menu.ShowAsContext();
             }
             
+            GUILayout.EndScrollView();
+
             EditorGUI.indentLevel--;
 
             if (_platformToAdd != null)

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: RC-EditWindowSettings
   m_EditorClassIdentifier: 
   languageFontSize: 15
-  languageLineHeight: 30
+  languageElementHeight: 30
+  languageElementWidth: 150
   foldoutNameColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   foldoutBackgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   headerButtonWidth: 85
@@ -136,4 +137,3 @@ MonoBehaviour:
     value: {fileID: 2800000, guid: 3f9734d6630f0f04abb4a8d06a45deb1, type: 3}
   - key: 42
     value: {fileID: 2800000, guid: 252c4eac1e7821e4d9c922d13e6eda9a, type: 3}
-  flagsFolder: Assets\CCLBStudio\RemoteConfig\Editor\Textures\Flags

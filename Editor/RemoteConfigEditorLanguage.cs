@@ -8,6 +8,7 @@ namespace CCLBStudio.SmartConfig
     {
         public SystemLanguage language;
         public string twoLettersIsoDisplay;
+        public string languageName;
         public Texture flag;
     }
 }

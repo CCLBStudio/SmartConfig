@@ -58,6 +58,24 @@
       "type": "String",
       "value": "Epic text !",
       "category": ""
+    },
+    {
+      "key": "my_awesome_key_5",
+      "type": "Translatable",
+      "value": {
+        "French": "",
+        "English": ""
+      },
+      "category": ""
+    },
+    {
+      "key": "my_awesome_key_6",
+      "type": "Translatable",
+      "value": {
+        "French": "",
+        "English": ""
+      },
+      "category": ""
     }
   ]
 }

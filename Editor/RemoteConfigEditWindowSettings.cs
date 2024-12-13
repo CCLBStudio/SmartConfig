@@ -8,7 +8,8 @@ namespace CCLBStudio.SmartConfig
     {
         [Header("Languages Settings")]
         [Min(5)] public int languageFontSize = 15;
-        [Min(10f)] public float languageLineHeight = 15f;
+        [Min(10f)] public float languageElementHeight = 30f;
+        [Min(10f)] public float languageElementWidth = 150f;
             
         [Header("Foldout Settings")]
         public Color foldoutNameColor = Color.yellow;
