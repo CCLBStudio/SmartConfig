@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
@@ -25,7 +25,7 @@ namespace CCLBStudio.SmartConfig
         /// <param name="json">The json to build from</param>
         public SmartConfigData(string json)
         {
-            SmartConfigJson rc = JsonConvert.DeserializeObject<SmartConfigJson>(json);
+            SmartConfigJson rc = JsonUtility.FromJson<SmartConfigJson>(json);
             platformEntries = new Dictionary<RuntimePlatform, List<SmartConfigEntry>>();
             allEntries = new List<SmartConfigEntry>();
             allLanguages = new List<SystemLanguage>();
@@ -38,19 +38,31 @@ namespace CCLBStudio.SmartConfig
 
             foreach (var jsonPlatform in rc.platforms)
             {
-                if (platformEntries.ContainsKey(jsonPlatform.platform))
+                bool platformCastSucceeded = ScJsonEnum.ToEnum(jsonPlatform.platform, out RuntimePlatform platform);
+                if (!platformCastSucceeded)
+                {
+                    continue;
+                }
+                
+                if (platformEntries.ContainsKey(platform))
                 {
                     Debug.LogError($"Platform {jsonPlatform.platform} is already in the platforms dictionary !");
                     continue;
                 }
 
                 var platformEntryList = new  List<SmartConfigEntry>(jsonPlatform.entries.Count);
-                platformEntries[jsonPlatform.platform] = platformEntryList;
+                platformEntries[platform] = platformEntryList;
 
                 foreach (var jsonEntry in jsonPlatform.entries)
                 {
-                    switch (jsonEntry.type)
-                {
+                    bool entryTypeCastSucceeded = ScJsonEnum.ToEnum(jsonEntry.type, out SmartConfigValueType entryType);
+                    if (!entryTypeCastSucceeded)
+                    {
+                        continue;
+                    }
+                    
+                    switch (entryType)
+                    {
                     case SmartConfigValueType.Int:
                         var intEntry = CreateIntEntryFrom(jsonEntry);
                         if (intEntry == null)
@@ -100,7 +112,7 @@ namespace CCLBStudio.SmartConfig
                         
                         platformEntryList.Add(translatableEntry);
                         break;
-                }
+                    }
                 }
             }
 
@@ -113,7 +125,13 @@ namespace CCLBStudio.SmartConfig
                 }
                 #endif
                 
-                switch (jsonEntry.type)
+                bool entryTypeCastSucceeded = ScJsonEnum.ToEnum(jsonEntry.type, out SmartConfigValueType entryType);
+                if (!entryTypeCastSucceeded)
+                {
+                    continue;
+                }
+                
+                switch (entryType)
                 {
                     case SmartConfigValueType.Int:
                         var intEntry = CreateIntEntryFrom(jsonEntry);
@@ -195,7 +213,7 @@ namespace CCLBStudio.SmartConfig
         
         private SmartConfigIntEntry CreateIntEntryFrom(SmartConfigEntryJson entry)
         {
-            if (!int.TryParse(entry.value.ToString(), out int i))
+            if (!int.TryParse(entry.value, out int i))
             {
                 Debug.LogError($"Entry {entry.key} is tagged as {entry.type} but its value is of type {entry.value.GetType().Name} !");
                 return null;
@@ -204,7 +222,7 @@ namespace CCLBStudio.SmartConfig
             return new SmartConfigIntEntry
             {
                 key = entry.key,
-                type = entry.type,
+                type = SmartConfigValueType.Int,
                 category = entry.category,
                 value = i
             };
@@ -212,7 +230,7 @@ namespace CCLBStudio.SmartConfig
         
         private SmartConfigFloatEntry CreateFloatEntryFrom(SmartConfigEntryJson entry)
         {
-            if (!float.TryParse(entry.value.ToString(), out float f))
+            if (!float.TryParse(entry.value, out float f))
             {
                 Debug.LogError($"Entry {entry.key} is tagged as {entry.type} but its value is of type {entry.value.GetType().Name} !");
                 return null;
@@ -221,7 +239,7 @@ namespace CCLBStudio.SmartConfig
             return new SmartConfigFloatEntry
             {
                 key = entry.key,
-                type = entry.type,
+                type = SmartConfigValueType.Float,
                 category = entry.category,
                 value = f
             };
@@ -229,7 +247,7 @@ namespace CCLBStudio.SmartConfig
         
         private SmartConfigBoolEntry CreateBoolEntryFrom(SmartConfigEntryJson entry)
         {
-            if (entry.value is not bool b)
+            if (!bool.TryParse(entry.value, out bool b))
             {
                 Debug.LogError($"Entry {entry.key} is tagged as {entry.type} but its value is of type {entry.value.GetType().Name} !");
                 return null;
@@ -238,7 +256,7 @@ namespace CCLBStudio.SmartConfig
             return new SmartConfigBoolEntry
             {
                 key = entry.key,
-                type = entry.type,
+                type = SmartConfigValueType.Bool,
                 category = entry.category,
                 value = b
             };
@@ -246,18 +264,12 @@ namespace CCLBStudio.SmartConfig
         
         private SmartConfigStringEntry CreateStringEntryFrom(SmartConfigEntryJson entry)
         {
-            if (entry.value is not string s)
-            {
-                Debug.LogError($"Entry {entry.key} is tagged as {entry.type} but its value is of type {entry.value.GetType().Name} !");
-                return null;
-            }
-            
             return new SmartConfigStringEntry
             {
                 key = entry.key,
-                type = entry.type,
+                type = SmartConfigValueType.String,
                 category = entry.category,
-                value = s
+                value = string.IsNullOrEmpty(entry.value) ? string.Empty : entry.value
             };
         }
         
@@ -265,13 +277,13 @@ namespace CCLBStudio.SmartConfig
         {
             try
             {
-                var jsonTranslations = JsonConvert.DeserializeObject<Dictionary<string, string>>(entry.value.ToString());
+                var jsonTranslations = JsonUtility.FromJson<SmartConfigJsonTranslatableDictionary>(entry.value);
                 Dictionary<SystemLanguage, string> translations = new Dictionary<SystemLanguage, string>();
-                foreach (var kvp in jsonTranslations)
+                foreach (var kvp in jsonTranslations.translations)
                 {
-                    if (Enum.TryParse<SystemLanguage>(kvp.Key, false, out var lang))
+                    if (Enum.TryParse<SystemLanguage>(kvp.language, false, out var lang))
                     {
-                        translations[lang] = kvp.Value;
+                        translations[lang] = kvp.content;
                         if (!allLanguages.Contains(lang))
                         {
                             allLanguages.Add(lang);
@@ -279,14 +291,14 @@ namespace CCLBStudio.SmartConfig
                     }
                     else
                     {
-                        Debug.LogError($"Enable to cast {kvp.Key} into a SystemLanguage value !");
+                        Debug.LogError($"Enable to cast {kvp.language} into a SystemLanguage value !");
                     }
                 }
                         
                 return new SmartConfigTranslatableEntry
                 {
                     key = entry.key,
-                    type = entry.type,
+                    type = SmartConfigValueType.Translatable,
                     category = entry.category,
                     value = translations
                 };

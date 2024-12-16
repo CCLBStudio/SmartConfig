@@ -1,8 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
 {
@@ -18,17 +15,15 @@ namespace CCLBStudio.SmartConfig
     public class SmartConfigEntryJson
     {
         public string key;
-        [JsonConverter(typeof(StringEnumConverter))]
-        public SmartConfigValueType type;
-        public object value;
+        public string type;
+        public string value;
         public string category;
     }
 
     [Serializable]
     public class SmartConfigPlatformEntryJson
     {
-        [JsonConverter(typeof(StringEnumConverter))]
-        public RuntimePlatform platform;
+        public string platform;
         public List<SmartConfigEntryJson> entries;
     }
 }

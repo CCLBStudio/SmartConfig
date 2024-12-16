@@ -14,11 +14,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   keyUses:
   - key: my_awesome_key_1
-    value: 15
+    value: 100
+  - key: my_awesome_key_4
+    value: 14
+  - key: my_awesome_key_5
+    value: 6
+  - key: my_awesome_key_6
+    value: 4
+  - key: my_awesome_key_2
+    value: 1
+  - key: my_awesome_key_3
+    value: 2
   autoInitialize: 1
   onInitialized: 0
   transferStrategy: {fileID: 11400000, guid: 8eed11f41db556a4bb7dbc729c8652d6, type: 2}
   defaultLanguage: 10
-  localTranslationFile: {fileID: 4900000, guid: 72242299064add241b416ece9fdb7a0d,
-    type: 3}
+  localTranslationFile: {fileID: 4900000, guid: 72242299064add241b416ece9fdb7a0d, type: 3}
   existingLanguages: 0e0000000a000000

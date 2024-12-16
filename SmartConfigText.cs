@@ -1,3 +1,4 @@
+using System.Globalization;
 using TMPro;
 using UnityEngine;
 
@@ -40,6 +41,24 @@ namespace CCLBStudio.SmartConfig
             if (service.GetString(key, out string value))
             {
                 _tmPro.text = value;
+                return;
+            }
+            
+            if (service.GetBool(key, out bool b))
+            {
+                _tmPro.text = b.ToString();
+                return;
+            }
+            
+            if (service.GetFloat(key, out float f))
+            {
+                _tmPro.text = f.ToString(CultureInfo.InvariantCulture);
+                return;
+            }
+            
+            if (service.GetInt(key, out int i))
+            {
+                _tmPro.text = i.ToString();
             }
         }
 

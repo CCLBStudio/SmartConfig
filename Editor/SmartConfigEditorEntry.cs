@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -290,38 +291,33 @@ namespace CCLBStudio.SmartConfig
             return new SmartConfigEntryJson
             {
                 key = key,
-                type = type,
+                type = type.ToString(),
                 category = category,
                 value = GetValueObject()
             };
         }
 
-        private object GetValueObject()
+        private string GetValueObject()
         {
             switch (type)
             {
                 case SmartConfigValueType.Int:
-                    return intValue;
+                    return intValue.ToString();
                 
                 case SmartConfigValueType.Float:
-                    return floatValue;
+                    return floatValue.ToString(CultureInfo.InvariantCulture);
                 
                 case SmartConfigValueType.Bool:
-                    return boolValue;
+                    return boolValue.ToString();
                 
                 case SmartConfigValueType.String:
                     return stringValue;
                 
                 case SmartConfigValueType.Translatable:
-                    Dictionary<string, string> jsonTranslations = new Dictionary<string, string>(translatableValue.Count);
+                    SmartConfigJsonTranslatableDictionary jsonTranslations = new SmartConfigJsonTranslatableDictionary(translatableValue);
+                    string serializedJson = JsonUtility.ToJson(jsonTranslations);
+                    return serializedJson;
 
-                    foreach (var pair in translatableValue)
-                    {
-                        jsonTranslations.Add(pair.Key.ToString(), pair.Value);
-                    }
-                    
-                    return jsonTranslations;
-                
                 default:
                     throw new ArgumentOutOfRangeException();
             }

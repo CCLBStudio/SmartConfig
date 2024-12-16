@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -137,7 +137,7 @@ namespace CCLBStudio.SmartConfig
             {
                 var platformConfig = new SmartConfigPlatformEntryJson
                 {
-                    platform = pair.Key,
+                    platform = pair.Key.ToString(),
                     entries = new List<SmartConfigEntryJson>(pair.Value.Count)
                 };
 
@@ -154,7 +154,7 @@ namespace CCLBStudio.SmartConfig
                 jsonData.entries.Add(editorEntry.ToSmartConfigJson());
             }
 
-            string json = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
+            string json = JsonUtility.ToJson(jsonData, true);
             string absolutePath = GetJsonFileAbsolutePath(service.LocalTranslationFile);
             File.WriteAllText(absolutePath, json);
             
