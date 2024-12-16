@@ -16,7 +16,7 @@ namespace CCLBStudio.SmartConfig
         public static string LocalTranslationFileProperty => nameof(localTranslationFile);
         public static string ExistingLanguagesProperty => nameof(existingLanguages);
 
-        public List<RemoteConfigKeyValuePair<string, int>> keyUses = new();
+        public List<SmartConfigKeyValuePair<string, int>> keyUses = new();
 
 #endif
 #endregion
@@ -38,7 +38,7 @@ namespace CCLBStudio.SmartConfig
             int index = keyUses.FindIndex(x => x.Key == key);
             if (index < 0)
             {
-                keyUses.Add(new RemoteConfigKeyValuePair<string, int>(key, 1));
+                keyUses.Add(new SmartConfigKeyValuePair<string, int>(key, 1));
             }
             else
             {
@@ -54,14 +54,14 @@ namespace CCLBStudio.SmartConfig
         public SystemLanguage CurrentLanguage => _currentlySelectedLanguage ?? defaultLanguage;
         public List<SystemLanguage> ExistingLanguages => existingLanguages;
         public const string FileName = "RemoteConfig.json";
-        public RemoteConfigTransferStrategy TransferStrategy => transferStrategy;
+        public SmartConfigTransferStrategy TransferStrategy => transferStrategy;
 
         [Tooltip("If TRUE, the service with automatically initialize itself during the OnEnable event.")]
         [SerializeField] private bool autoInitialize = true;
         [Tooltip("Determine what action will be performed when the service is initialized. None = nothing, LoadFromCloud = download the remote file and load it, LoadFromLocalFile = loading from the local json file.")]
         [SerializeField] private InitializeAction onInitialized = InitializeAction.None;
         [Tooltip("The script holding your logic to upload/download your json file. See documentation for more information.")]
-        [SerializeField] private RemoteConfigTransferStrategy transferStrategy;
+        [SerializeField] private SmartConfigTransferStrategy transferStrategy;
         [Tooltip("The default language to use if none has been specified with the SelectLanguage() method.")]
         [SerializeField] private SystemLanguage defaultLanguage = SystemLanguage.English;
         [Tooltip("You local json file.")]
@@ -73,10 +73,10 @@ namespace CCLBStudio.SmartConfig
         [NonSerialized] private Dictionary<string, float> _runtimeFloatValues;
         [NonSerialized] private Dictionary<string, bool> _runtimeBoolValues;
         [NonSerialized] private Dictionary<string, string> _runtimeStringValues;
-        [NonSerialized] private RemoteConfigData _runtimeRc;
+        [NonSerialized] private SmartConfigData _runtimeRc;
         [NonSerialized] private SystemLanguage? _currentlySelectedLanguage;
         [NonSerialized] private SystemLanguage _currentlyTranslatedLanguage;
-        [NonSerialized] private List<IRemoteConfigListener> _listeners;
+        [NonSerialized] private List<ISmartConfigListener> _listeners;
 
         private enum InitializeAction {None, LoadFromCloud, LoadFromLocalFile}
 
@@ -100,7 +100,7 @@ namespace CCLBStudio.SmartConfig
             _runtimeFloatValues = new Dictionary<string, float>();
             _runtimeBoolValues = new Dictionary<string, bool>();
             _runtimeStringValues = new Dictionary<string, string>();
-            _listeners = new List<IRemoteConfigListener>();
+            _listeners = new List<ISmartConfigListener>();
 
             _runtimeRc = null;
             _currentlySelectedLanguage = null;
@@ -157,7 +157,7 @@ namespace CCLBStudio.SmartConfig
         private void OnRemoteConfigFetched(string json)
         {
             Debug.Log("--- REMOTE CONFIG --- Successfully downloaded the remote config file ! Loading...");
-            _runtimeRc = new RemoteConfigData(json);
+            _runtimeRc = new SmartConfigData(json);
             LoadFrom(_runtimeRc);
         }
 
@@ -183,11 +183,11 @@ namespace CCLBStudio.SmartConfig
                 return;
             }
             
-            _runtimeRc = new RemoteConfigData(localTranslationFile.text);
+            _runtimeRc = new SmartConfigData(localTranslationFile.text);
             LoadFrom(_runtimeRc);
         }
 
-        private void LoadPlatformSettings(RemoteConfigData rc)
+        private void LoadPlatformSettings(SmartConfigData rc)
         {
             if (!rc.platformEntries.ContainsKey(Application.platform))
             {
@@ -200,39 +200,39 @@ namespace CCLBStudio.SmartConfig
             {
                 switch (entry.type)
                 {
-                    case RemoteConfigValueType.Int:
-                        var intEntry = (RemoteConfigIntEntry)entry;
+                    case SmartConfigValueType.Int:
+                        var intEntry = (SmartConfigIntEntry)entry;
                         if (!_runtimeIntValues.TryAdd(intEntry.key, intEntry.value))
                         {
                             Debug.LogError($"--- REMOTE CONFIG --- int dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
-                    case RemoteConfigValueType.Float:
-                        var floatEntry = (RemoteConfigFloatEntry)entry;
+                    case SmartConfigValueType.Float:
+                        var floatEntry = (SmartConfigFloatEntry)entry;
                         if (!_runtimeFloatValues.TryAdd(floatEntry.key, floatEntry.value))
                         {
                             Debug.LogError($"--- REMOTE CONFIG --- float dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
-                    case RemoteConfigValueType.Bool:
-                        var boolEntry = (RemoteConfigBoolEntry)entry;
+                    case SmartConfigValueType.Bool:
+                        var boolEntry = (SmartConfigBoolEntry)entry;
                         if (!_runtimeBoolValues.TryAdd(boolEntry.key, boolEntry.value))
                         {
                             Debug.LogError($"--- REMOTE CONFIG --- bool dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
-                    case RemoteConfigValueType.String:
-                        var stringEntry = (RemoteConfigStringEntry)entry;
+                    case SmartConfigValueType.String:
+                        var stringEntry = (SmartConfigStringEntry)entry;
                         if (!_runtimeStringValues.TryAdd(stringEntry.key, stringEntry.value))
                         {
                             Debug.LogError($"--- REMOTE CONFIG --- string dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
-                    case RemoteConfigValueType.Translatable:
+                    case SmartConfigValueType.Translatable:
                         break;
                     
                     default:
@@ -241,7 +241,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void LoadFrom(RemoteConfigData rc)
+        private void LoadFrom(SmartConfigData rc)
         {
             existingLanguages = rc.allLanguages;
 
@@ -384,7 +384,7 @@ namespace CCLBStudio.SmartConfig
 
         #region Listener Methods
 
-        public void AddListener(IRemoteConfigListener l)
+        public void AddListener(ISmartConfigListener l)
         {
             if (!_listeners.Contains(l))
             {
@@ -392,7 +392,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        public void RemoveListener(IRemoteConfigListener l)
+        public void RemoveListener(ISmartConfigListener l)
         {
             int i = _listeners.FindIndex(x => x == l);
             if (i >= 0)

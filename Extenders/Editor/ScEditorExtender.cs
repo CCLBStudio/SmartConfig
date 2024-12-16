@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
 {
-    public static class RcEditorExtender
+    public static class ScEditorExtender
     {
         public static List<SerializedProperty> GetSelfPropertiesExcluding(SerializedObject serializedObject, params string[] toExclude)
         {

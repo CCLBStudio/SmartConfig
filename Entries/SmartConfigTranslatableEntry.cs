@@ -5,7 +5,7 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigTranslatableEntry : RemoteConfigEntry
+    public class SmartConfigTranslatableEntry : SmartConfigEntry
     {
         public Dictionary<SystemLanguage, string> value;
     }

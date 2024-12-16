@@ -3,10 +3,10 @@ using System;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigEntry
+    public class SmartConfigEntry
     {
         public string key;
-        public RemoteConfigValueType type;
+        public SmartConfigValueType type;
         public string category;
     }
 }

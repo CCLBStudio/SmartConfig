@@ -6,35 +6,35 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigData
+    public class SmartConfigData
     {
-        public List<RemoteConfigEntry> allEntries;
+        public List<SmartConfigEntry> allEntries;
         public List<SystemLanguage> allLanguages;
         public List<string> allCategories;
 
-        public Dictionary<RuntimePlatform, List<RemoteConfigEntry>> platformEntries;
-        public Dictionary<string, RemoteConfigIntEntry> intEntries;
-        public Dictionary<string, RemoteConfigFloatEntry> floatEntries;
-        public Dictionary<string, RemoteConfigBoolEntry> boolEntries;
-        public Dictionary<string, RemoteConfigStringEntry> stringEntries;
-        public Dictionary<string, RemoteConfigTranslatableEntry> translatableEntries;
+        public Dictionary<RuntimePlatform, List<SmartConfigEntry>> platformEntries;
+        public Dictionary<string, SmartConfigIntEntry> intEntries;
+        public Dictionary<string, SmartConfigFloatEntry> floatEntries;
+        public Dictionary<string, SmartConfigBoolEntry> boolEntries;
+        public Dictionary<string, SmartConfigStringEntry> stringEntries;
+        public Dictionary<string, SmartConfigTranslatableEntry> translatableEntries;
 
         /// <summary>
         /// Build the remote config data from the relevant json information.
         /// </summary>
         /// <param name="json">The json to build from</param>
-        public RemoteConfigData(string json)
+        public SmartConfigData(string json)
         {
-            RemoteConfigJson rc = JsonConvert.DeserializeObject<RemoteConfigJson>(json);
-            platformEntries = new Dictionary<RuntimePlatform, List<RemoteConfigEntry>>();
-            allEntries = new List<RemoteConfigEntry>();
+            SmartConfigJson rc = JsonConvert.DeserializeObject<SmartConfigJson>(json);
+            platformEntries = new Dictionary<RuntimePlatform, List<SmartConfigEntry>>();
+            allEntries = new List<SmartConfigEntry>();
             allLanguages = new List<SystemLanguage>();
             allCategories = new List<string>();
-            intEntries = new Dictionary<string, RemoteConfigIntEntry>();
-            floatEntries = new Dictionary<string, RemoteConfigFloatEntry>();
-            boolEntries = new Dictionary<string, RemoteConfigBoolEntry>();
-            stringEntries = new Dictionary<string, RemoteConfigStringEntry>();
-            translatableEntries = new Dictionary<string, RemoteConfigTranslatableEntry>();
+            intEntries = new Dictionary<string, SmartConfigIntEntry>();
+            floatEntries = new Dictionary<string, SmartConfigFloatEntry>();
+            boolEntries = new Dictionary<string, SmartConfigBoolEntry>();
+            stringEntries = new Dictionary<string, SmartConfigStringEntry>();
+            translatableEntries = new Dictionary<string, SmartConfigTranslatableEntry>();
 
             foreach (var jsonPlatform in rc.platforms)
             {
@@ -44,14 +44,14 @@ namespace CCLBStudio.SmartConfig
                     continue;
                 }
 
-                var platformEntryList = new  List<RemoteConfigEntry>(jsonPlatform.entries.Count);
+                var platformEntryList = new  List<SmartConfigEntry>(jsonPlatform.entries.Count);
                 platformEntries[jsonPlatform.platform] = platformEntryList;
 
                 foreach (var jsonEntry in jsonPlatform.entries)
                 {
                     switch (jsonEntry.type)
                 {
-                    case RemoteConfigValueType.Int:
+                    case SmartConfigValueType.Int:
                         var intEntry = CreateIntEntryFrom(jsonEntry);
                         if (intEntry == null)
                         {
@@ -61,7 +61,7 @@ namespace CCLBStudio.SmartConfig
                         platformEntryList.Add(intEntry);
                         break;
                     
-                    case RemoteConfigValueType.Float:
+                    case SmartConfigValueType.Float:
                         var floatEntry = CreateFloatEntryFrom(jsonEntry);
                         if (floatEntry == null)
                         {
@@ -71,7 +71,7 @@ namespace CCLBStudio.SmartConfig
                         platformEntryList.Add(floatEntry);
                         break;
                     
-                    case RemoteConfigValueType.Bool:
+                    case SmartConfigValueType.Bool:
                         var boolEntry = CreateBoolEntryFrom(jsonEntry);
                         if (boolEntry == null)
                         {
@@ -81,7 +81,7 @@ namespace CCLBStudio.SmartConfig
                         platformEntryList.Add(boolEntry);
                         break;
                     
-                    case RemoteConfigValueType.String:
+                    case SmartConfigValueType.String:
                         var stringEntry = CreateStringEntryFrom(jsonEntry);
                         if (stringEntry == null)
                         {
@@ -91,7 +91,7 @@ namespace CCLBStudio.SmartConfig
                         platformEntryList.Add(stringEntry);
                         break;
                     
-                    case RemoteConfigValueType.Translatable:
+                    case SmartConfigValueType.Translatable:
                         var translatableEntry = CreateTranslatableEntryFrom(jsonEntry);
                         if (translatableEntry == null)
                         {
@@ -115,7 +115,7 @@ namespace CCLBStudio.SmartConfig
                 
                 switch (jsonEntry.type)
                 {
-                    case RemoteConfigValueType.Int:
+                    case SmartConfigValueType.Int:
                         var intEntry = CreateIntEntryFrom(jsonEntry);
                         if (intEntry == null)
                         {
@@ -125,7 +125,7 @@ namespace CCLBStudio.SmartConfig
                         TryAddEntryTo(intEntry, allEntries, intEntries);
                         break;
                     
-                    case RemoteConfigValueType.Float:
+                    case SmartConfigValueType.Float:
                         var floatEntry = CreateFloatEntryFrom(jsonEntry);
                         if (floatEntry == null)
                         {
@@ -135,7 +135,7 @@ namespace CCLBStudio.SmartConfig
                         TryAddEntryTo(floatEntry, allEntries, floatEntries);
                         break;
                     
-                    case RemoteConfigValueType.Bool:
+                    case SmartConfigValueType.Bool:
                         var boolEntry = CreateBoolEntryFrom(jsonEntry);
                         if (boolEntry == null)
                         {
@@ -145,7 +145,7 @@ namespace CCLBStudio.SmartConfig
                         TryAddEntryTo(boolEntry, allEntries, boolEntries);
                         break;
                     
-                    case RemoteConfigValueType.String:
+                    case SmartConfigValueType.String:
                         var stringEntry = CreateStringEntryFrom(jsonEntry);
                         if (stringEntry == null)
                         {
@@ -155,7 +155,7 @@ namespace CCLBStudio.SmartConfig
                         TryAddEntryTo(stringEntry, allEntries, stringEntries);
                         break;
                     
-                    case RemoteConfigValueType.Translatable:
+                    case SmartConfigValueType.Translatable:
                         var translatableEntry = CreateTranslatableEntryFrom(jsonEntry);
                         if (translatableEntry == null)
                         {
@@ -168,7 +168,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void TryAddEntryTo<TValue>(RemoteConfigEntry entry, List<RemoteConfigEntry> list, IDictionary<string, TValue> dictionary = null)
+        private void TryAddEntryTo<TValue>(SmartConfigEntry entry, List<SmartConfigEntry> list, IDictionary<string, TValue> dictionary = null)
         {
             list.Add(entry);
             
@@ -193,7 +193,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
         
-        private RemoteConfigIntEntry CreateIntEntryFrom(RemoteConfigEntryJson entry)
+        private SmartConfigIntEntry CreateIntEntryFrom(SmartConfigEntryJson entry)
         {
             if (!int.TryParse(entry.value.ToString(), out int i))
             {
@@ -201,7 +201,7 @@ namespace CCLBStudio.SmartConfig
                 return null;
             }
             
-            return new RemoteConfigIntEntry
+            return new SmartConfigIntEntry
             {
                 key = entry.key,
                 type = entry.type,
@@ -210,7 +210,7 @@ namespace CCLBStudio.SmartConfig
             };
         }
         
-        private RemoteConfigFloatEntry CreateFloatEntryFrom(RemoteConfigEntryJson entry)
+        private SmartConfigFloatEntry CreateFloatEntryFrom(SmartConfigEntryJson entry)
         {
             if (!float.TryParse(entry.value.ToString(), out float f))
             {
@@ -218,7 +218,7 @@ namespace CCLBStudio.SmartConfig
                 return null;
             }
             
-            return new RemoteConfigFloatEntry
+            return new SmartConfigFloatEntry
             {
                 key = entry.key,
                 type = entry.type,
@@ -227,7 +227,7 @@ namespace CCLBStudio.SmartConfig
             };
         }
         
-        private RemoteConfigBoolEntry CreateBoolEntryFrom(RemoteConfigEntryJson entry)
+        private SmartConfigBoolEntry CreateBoolEntryFrom(SmartConfigEntryJson entry)
         {
             if (entry.value is not bool b)
             {
@@ -235,7 +235,7 @@ namespace CCLBStudio.SmartConfig
                 return null;
             }
             
-            return new RemoteConfigBoolEntry
+            return new SmartConfigBoolEntry
             {
                 key = entry.key,
                 type = entry.type,
@@ -244,7 +244,7 @@ namespace CCLBStudio.SmartConfig
             };
         }
         
-        private RemoteConfigStringEntry CreateStringEntryFrom(RemoteConfigEntryJson entry)
+        private SmartConfigStringEntry CreateStringEntryFrom(SmartConfigEntryJson entry)
         {
             if (entry.value is not string s)
             {
@@ -252,7 +252,7 @@ namespace CCLBStudio.SmartConfig
                 return null;
             }
             
-            return new RemoteConfigStringEntry
+            return new SmartConfigStringEntry
             {
                 key = entry.key,
                 type = entry.type,
@@ -261,7 +261,7 @@ namespace CCLBStudio.SmartConfig
             };
         }
         
-        private RemoteConfigTranslatableEntry CreateTranslatableEntryFrom(RemoteConfigEntryJson entry)
+        private SmartConfigTranslatableEntry CreateTranslatableEntryFrom(SmartConfigEntryJson entry)
         {
             try
             {
@@ -283,7 +283,7 @@ namespace CCLBStudio.SmartConfig
                     }
                 }
                         
-                return new RemoteConfigTranslatableEntry
+                return new SmartConfigTranslatableEntry
                 {
                     key = entry.key,
                     type = entry.type,

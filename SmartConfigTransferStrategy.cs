@@ -6,7 +6,7 @@ namespace CCLBStudio.SmartConfig
     /// <summary>
     /// Abstract script holding the methods to override for custom upload/download logic. Create a script inheriting from this one, override the methods and link an instance of your custom script in the RemoteConfigService.
     /// </summary>
-    public abstract class RemoteConfigTransferStrategy : ScriptableObject
+    public abstract class SmartConfigTransferStrategy : ScriptableObject
     {
         /// <summary>
         /// The method handling the upload logic.

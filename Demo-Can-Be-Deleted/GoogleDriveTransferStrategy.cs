@@ -9,7 +9,7 @@ using Unity.EditorCoroutines.Editor;
 namespace CCLBStudio.SmartConfig.Demo
 {
     [CreateAssetMenu(fileName = "GoogleDriveTransferStrategy", menuName = "CCLB Studio/Remote Config/Transfer Strategies/Google Drive Strategy")]
-    public class GoogleDriveTransferStrategy : RemoteConfigTransferStrategy
+    public class GoogleDriveTransferStrategy : SmartConfigTransferStrategy
     {
         [SerializeField] private string fileId;
         private const string BaseUrl = "https://drive.google.com/uc?export=download&id=";

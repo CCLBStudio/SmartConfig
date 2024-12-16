@@ -5,7 +5,7 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [CustomEditor(typeof(SmartConfigService))]
-    public class RemoteConfigServiceEditor : Editor
+    public class SmartConfigServiceEditor : Editor
     {
         private SerializedProperty _defaultLanguage;
         private SerializedProperty _localTranslationFile;
@@ -21,7 +21,7 @@ namespace CCLBStudio.SmartConfig
             _localTranslationFile = serializedObject.FindProperty(SmartConfigService.LocalTranslationFileProperty);
             _existingLanguages = serializedObject.FindProperty(SmartConfigService.ExistingLanguagesProperty);
 
-            _remainingProperties = RcEditorExtender.GetSelfPropertiesExcluding(serializedObject, SmartConfigService.DefaultLanguageProperty,
+            _remainingProperties = ScEditorExtender.GetSelfPropertiesExcluding(serializedObject, SmartConfigService.DefaultLanguageProperty,
                 SmartConfigService.LocalTranslationFileProperty, SmartConfigService.ExistingLanguagesProperty);
         }
     
@@ -34,7 +34,7 @@ namespace CCLBStudio.SmartConfig
             }
             
             serializedObject.Update();
-            RcEditorExtender.DrawScriptField(serializedObject);
+            ScEditorExtender.DrawScriptField(serializedObject);
             
             GUILayout.Space(10);
             
@@ -56,9 +56,9 @@ namespace CCLBStudio.SmartConfig
             GUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
 
-            if (GUILayout.Button("Edit Remote Config", _buttonStyle))
+            if (GUILayout.Button("Edit Smart Config", _buttonStyle))
             {
-                RemoteConfigEditWindow.ShowWindow();
+                SmartConfigEditWindow.ShowWindow();
             }
 
             GUILayout.FlexibleSpace();

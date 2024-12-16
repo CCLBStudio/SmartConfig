@@ -3,7 +3,7 @@ using System;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigFloatEntry : RemoteConfigEntry
+    public class SmartConfigFloatEntry : SmartConfigEntry
     {
         public float value;
     }

@@ -7,28 +7,28 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigJson
+    public class SmartConfigJson
     {
         public int version;
-        public List<RemoteConfigPlatformEntryJson> platforms;
-        public List<RemoteConfigEntryJson> entries;
+        public List<SmartConfigPlatformEntryJson> platforms;
+        public List<SmartConfigEntryJson> entries;
     }
 
     [Serializable]
-    public class RemoteConfigEntryJson
+    public class SmartConfigEntryJson
     {
         public string key;
         [JsonConverter(typeof(StringEnumConverter))]
-        public RemoteConfigValueType type;
+        public SmartConfigValueType type;
         public object value;
         public string category;
     }
 
     [Serializable]
-    public class RemoteConfigPlatformEntryJson
+    public class SmartConfigPlatformEntryJson
     {
         [JsonConverter(typeof(StringEnumConverter))]
         public RuntimePlatform platform;
-        public List<RemoteConfigEntryJson> entries;
+        public List<SmartConfigEntryJson> entries;
     }
 }

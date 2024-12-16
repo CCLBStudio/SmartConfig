@@ -3,8 +3,8 @@ using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
 {
-    [CreateAssetMenu(fileName = "NewRemoteConfigEditSettings", menuName = "CCLB Studio/Remote Config/Editor/Settings")]
-    public class RemoteConfigEditWindowSettings : ScriptableObject
+    [CreateAssetMenu(fileName = "NewSmartConfigEditSettings", menuName = "CCLB Studio/Smart Config/Editor/Settings")]
+    public class SmartConfigEditWindowSettings : ScriptableObject
     {
         [Header("Languages Settings")]
         [Min(5)] public int languageFontSize = 15;
@@ -50,6 +50,6 @@ namespace CCLBStudio.SmartConfig
         [Min(0)] public float keyUsageLineSizeOffset = 6;
 
         [Header("Language Flags")]
-        public List<RemoteConfigKeyValuePair<SystemLanguage, Texture>> languageFlags;
+        public List<SmartConfigKeyValuePair<SystemLanguage, Texture>> languageFlags;
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -8,10 +7,10 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigEditorEntry
+    public class SmartConfigEditorEntry
     {
         public string key;
-        public RemoteConfigValueType type;
+        public SmartConfigValueType type;
         public string category = string.Empty;
         public int categoryIndex = 0;
         public bool respectCategoryPrefix = true;
@@ -21,17 +20,17 @@ namespace CCLBStudio.SmartConfig
         public bool boolValue;
         public string stringValue;
         public float floatValue;
-        public List<RemoteConfigKeyValuePair<SystemLanguage, string>> translatableValue = new();
+        public List<SmartConfigKeyValuePair<SystemLanguage, string>> translatableValue = new();
 
-        [SerializeField] private RemoteConfigEditorData editorData;
-        [SerializeField] private RemoteConfigEditWindowSettings editSettings;
+        [SerializeField] private SmartConfigEditorData editorData;
+        [SerializeField] private SmartConfigEditWindowSettings editSettings;
 
         private delegate void DrawingDelegate(ref Rect rect, bool shouldDraw);
         private DrawingDelegate _drawingMethod;
         private Func<float> _valueHeight;
         private Rect _langLabelRect;
 
-        public RemoteConfigEditorEntry(RemoteConfigValueType type, RemoteConfigEditorData editorData)
+        public SmartConfigEditorEntry(SmartConfigValueType type, SmartConfigEditorData editorData)
         {
             this.editorData = editorData;
             editSettings = editorData.settings;
@@ -40,7 +39,7 @@ namespace CCLBStudio.SmartConfig
             Refresh();
         }
 
-        public RemoteConfigEditorEntry(RemoteConfigEntry entry, RemoteConfigEditorData editorData)
+        public SmartConfigEditorEntry(SmartConfigEntry entry, SmartConfigEditorData editorData)
         {
             this.editorData = editorData;
             editSettings = editorData.settings;
@@ -50,28 +49,28 @@ namespace CCLBStudio.SmartConfig
 
             switch (type)
             {
-                case RemoteConfigValueType.Int:
-                    intValue = ((RemoteConfigIntEntry)entry).value;
+                case SmartConfigValueType.Int:
+                    intValue = ((SmartConfigIntEntry)entry).value;
                     break;
                 
-                case RemoteConfigValueType.Float:
-                    floatValue = ((RemoteConfigFloatEntry)entry).value;
+                case SmartConfigValueType.Float:
+                    floatValue = ((SmartConfigFloatEntry)entry).value;
                     break;
                 
-                case RemoteConfigValueType.Bool:
-                    boolValue = ((RemoteConfigBoolEntry)entry).value;
+                case SmartConfigValueType.Bool:
+                    boolValue = ((SmartConfigBoolEntry)entry).value;
                     break;
                 
-                case RemoteConfigValueType.String:
-                    stringValue = ((RemoteConfigStringEntry)entry).value;
+                case SmartConfigValueType.String:
+                    stringValue = ((SmartConfigStringEntry)entry).value;
                     break;
                 
-                case RemoteConfigValueType.Translatable:
-                    translatableValue = new List<RemoteConfigKeyValuePair<SystemLanguage, string>>();
-                    var translatableEntry = (RemoteConfigTranslatableEntry)entry;
+                case SmartConfigValueType.Translatable:
+                    translatableValue = new List<SmartConfigKeyValuePair<SystemLanguage, string>>();
+                    var translatableEntry = (SmartConfigTranslatableEntry)entry;
                     foreach (var pair in translatableEntry.value)
                     {
-                        translatableValue.Add(new RemoteConfigKeyValuePair<SystemLanguage, string>(pair.Key, pair.Value));
+                        translatableValue.Add(new SmartConfigKeyValuePair<SystemLanguage, string>(pair.Key, pair.Value));
                     }
 
                     break;
@@ -98,7 +97,7 @@ namespace CCLBStudio.SmartConfig
                 int index = translatableValue.FindIndex(x => x.Key == lang.language);
                 if (index < 0)
                 {
-                    translatableValue.Add(new RemoteConfigKeyValuePair<SystemLanguage, string>(lang.language, string.Empty));
+                    translatableValue.Add(new SmartConfigKeyValuePair<SystemLanguage, string>(lang.language, string.Empty));
                 }
             }
 
@@ -124,27 +123,27 @@ namespace CCLBStudio.SmartConfig
         {
             switch (type)
             {
-                case RemoteConfigValueType.Int:
+                case SmartConfigValueType.Int:
                     _drawingMethod = DrawIntField;
                     _valueHeight = GetDefaultHeight;
                     break;
                 
-                case RemoteConfigValueType.Float:
+                case SmartConfigValueType.Float:
                     _drawingMethod = DrawFloatField;
                     _valueHeight = GetDefaultHeight;
                     break;
                 
-                case RemoteConfigValueType.Bool:
+                case SmartConfigValueType.Bool:
                     _drawingMethod = DrawBoolField;
                     _valueHeight = GetDefaultHeight;
                     break;
                 
-                case RemoteConfigValueType.String:
+                case SmartConfigValueType.String:
                     _drawingMethod = DrawStringField;
                     _valueHeight = GetDefaultHeight;
                     break;
                 
-                case RemoteConfigValueType.Translatable:
+                case SmartConfigValueType.Translatable:
                     _langLabelRect = new Rect(0f, 0f, 25f, 25f * 0.6667f);
                     _drawingMethod = DrawTranslatableField;
                     _valueHeight = GetTranslatableHeight;
@@ -160,7 +159,7 @@ namespace CCLBStudio.SmartConfig
             RefreshDrawingMethods();
         }
 
-        public void NotifyLanguageAdded(RemoteConfigEditorLanguage newLanguage)
+        public void NotifyLanguageAdded(SmartConfigEditorLanguage newLanguage)
         {
             int index = translatableValue.FindIndex(x => x.Key == newLanguage.language);
             if (index >= 0)
@@ -168,10 +167,10 @@ namespace CCLBStudio.SmartConfig
                 return;
             }
 
-            translatableValue.Add(new RemoteConfigKeyValuePair<SystemLanguage, string>(newLanguage.language, string.Empty));
+            translatableValue.Add(new SmartConfigKeyValuePair<SystemLanguage, string>(newLanguage.language, string.Empty));
         }
 
-        public void NotifyLanguageRemoved(RemoteConfigEditorLanguage removedLanguage)
+        public void NotifyLanguageRemoved(SmartConfigEditorLanguage removedLanguage)
         {
             int index = translatableValue.FindIndex(x => x.Key == removedLanguage.language);
             translatableValue.RemoveAt(index);
@@ -259,7 +258,7 @@ namespace CCLBStudio.SmartConfig
             }
             else
             {
-                foreach (RemoteConfigEditorLanguage lang in editorData.allLanguages)
+                foreach (SmartConfigEditorLanguage lang in editorData.allLanguages)
                 {
                     float rectOffset = index * (rect.height + EditorGUIUtility.standardVerticalSpacing);
                     _langLabelRect.y = startY + rectOffset;
@@ -286,9 +285,9 @@ namespace CCLBStudio.SmartConfig
 
         #region Json Methods
 
-        public RemoteConfigEntryJson ToRemoteConfigJson()
+        public SmartConfigEntryJson ToSmartConfigJson()
         {
-            return new RemoteConfigEntryJson
+            return new SmartConfigEntryJson
             {
                 key = key,
                 type = type,
@@ -301,19 +300,19 @@ namespace CCLBStudio.SmartConfig
         {
             switch (type)
             {
-                case RemoteConfigValueType.Int:
+                case SmartConfigValueType.Int:
                     return intValue;
                 
-                case RemoteConfigValueType.Float:
+                case SmartConfigValueType.Float:
                     return floatValue;
                 
-                case RemoteConfigValueType.Bool:
+                case SmartConfigValueType.Bool:
                     return boolValue;
                 
-                case RemoteConfigValueType.String:
+                case SmartConfigValueType.String:
                     return stringValue;
                 
-                case RemoteConfigValueType.Translatable:
+                case SmartConfigValueType.Translatable:
                     Dictionary<string, string> jsonTranslations = new Dictionary<string, string>(translatableValue.Count);
 
                     foreach (var pair in translatableValue)

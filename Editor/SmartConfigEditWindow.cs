@@ -8,13 +8,13 @@ using Object = UnityEngine.Object;
 
 namespace CCLBStudio.SmartConfig
 {
-    public class RemoteConfigEditWindow : EditorWindow
+    public class SmartConfigEditWindow : EditorWindow
     {
         private SmartConfigService _smartConfigService;
-        private RemoteConfigEditWindowSettings _settings;
+        private SmartConfigEditWindowSettings _settings;
         [NonSerialized] private bool _init;
         
-        private RemoteConfigValueTypeFilter _typeFilter = RemoteConfigValueTypeFilter.None;
+        private SmartConfigValueTypeFilter _typeFilter = SmartConfigValueTypeFilter.None;
         private string[] _sortingCategories;
         private int _currentCategoryFilter;
         private bool _isEditingNewCategory;
@@ -28,13 +28,13 @@ namespace CCLBStudio.SmartConfig
         private int _selectedTab = 0;
         [NonSerialized] private int _previouslySelectedTable = -1;
 
-        private Dictionary<int, List<RemoteConfigEditorEntry>> _usageReportEntries;
+        private Dictionary<int, List<SmartConfigEditorEntry>> _usageReportEntries;
         private List<int> _orderedReportKeys;
         [NonSerialized] private bool _initializedUsageReport;
 
-        private RemoteConfigEditorData _editorData;
+        private SmartConfigEditorData _editorData;
         private Dictionary<RuntimePlatform, bool> _platformFoldouts;
-        private List<RemoteConfigEditorEntry> _entriesToDraw;
+        private List<SmartConfigEditorEntry> _entriesToDraw;
         private RuntimePlatform? _platformToAdd = null;
 
         private GUIStyle _columnsLabelStyle;
@@ -85,7 +85,7 @@ namespace CCLBStudio.SmartConfig
 
         public static void ShowWindow()
         {
-            var window = (RemoteConfigEditWindow) GetWindow(typeof(RemoteConfigEditWindow));
+            var window = (SmartConfigEditWindow) GetWindow(typeof(SmartConfigEditWindow));
             window.minSize = new Vector2(1200, 500);
         }
 
@@ -93,9 +93,9 @@ namespace CCLBStudio.SmartConfig
 
         private void OnEnable()
         {
-            _smartConfigService = RcEditorExtender.LoadScriptableAsset<SmartConfigService>();
-            _editorData = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditorData>();
-            _settings = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
+            _smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
+            _editorData = ScEditorExtender.LoadScriptableAsset<SmartConfigEditorData>();
+            _settings = ScEditorExtender.LoadScriptableAsset<SmartConfigEditWindowSettings>();
 
             _scrollViewRect = new Rect();
             _scrollContentRect = new Rect();
@@ -188,14 +188,14 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_smartConfigService)
             {
-                _smartConfigService = RcEditorExtender.LoadScriptableAsset<SmartConfigService>();
-                EditorGUILayout.HelpBox("Unable to load the Remote Config Service !", MessageType.Error);
+                _smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
+                EditorGUILayout.HelpBox("Unable to load the Smart Config Service !", MessageType.Error);
                 return false;
             }
 
             if (!_settings)
             {
-                _settings = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
+                _settings = ScEditorExtender.LoadScriptableAsset<SmartConfigEditWindowSettings>();
                 EditorGUILayout.HelpBox("Unable to load the settings file !", MessageType.Error);
                 return false;
             }
@@ -212,7 +212,7 @@ namespace CCLBStudio.SmartConfig
 
             if (!_smartConfigService.LocalTranslationFile)
             {
-                EditorGUILayout.HelpBox("There is no local translation file. This file holds all the remote config data for the current version and is what will be uploaded on the server. Click the button below to create a empty one.", MessageType.Warning);
+                EditorGUILayout.HelpBox("There is no local translation file. This file holds all the smart config data for the current version and is what will be uploaded on the server. Click the button below to create a empty one.", MessageType.Warning);
                 if (GUILayout.Button("Create Empty Json"))
                 {
                     CreateAndBindEmptyJson();
@@ -379,7 +379,7 @@ namespace CCLBStudio.SmartConfig
             {
                 if (!_smartConfigService.TransferStrategy)
                 {
-                    EditorUtility.DisplayDialog("No Transfer Strategy !", "There is no transfer strategy binded in your remote config service. Please create and bind one to perform upload / download.", "Ok");
+                    EditorUtility.DisplayDialog("No Transfer Strategy !", "There is no transfer strategy binded in your smart config service. Please create and bind one to perform upload / download.", "Ok");
                 }
                 else
                 {
@@ -423,7 +423,7 @@ namespace CCLBStudio.SmartConfig
             {
                 if (!_smartConfigService.TransferStrategy)
                 {
-                    EditorUtility.DisplayDialog("No Transfer Strategy !", "There is no transfer strategy binded in your remote config service. Please create and bind one to perform upload / download.", "Ok");
+                    EditorUtility.DisplayDialog("No Transfer Strategy !", "There is no transfer strategy binded in your smart config service. Please create and bind one to perform upload / download.", "Ok");
                 }
                 else
                 {
@@ -463,7 +463,7 @@ namespace CCLBStudio.SmartConfig
             GUILayout.Label("Local Sync", _headerButtonsLabelStyle, GUILayout.Width(_settings.headerButtonWidth));
             if (GUILayout.Button(_syncFromJsonContent, _commonHeaderButtonStyle))
             {
-                var rc = new RemoteConfigData(_smartConfigService.LocalTranslationFile.text);
+                var rc = new SmartConfigData(_smartConfigService.LocalTranslationFile.text);
                 _editorData.LoadFrom(rc);
                 RefreshDrawingData();
             }
@@ -737,7 +737,7 @@ namespace CCLBStudio.SmartConfig
             _platformToAdd = platform;
         }
 
-        private void DrawPlatformEntry(RuntimePlatform platform, RemoteConfigEditorEntry entry, int index)
+        private void DrawPlatformEntry(RuntimePlatform platform, SmartConfigEditorEntry entry, int index)
         {
             GUILayout.BeginHorizontal();
             GUILayout.Space(EditorGUI.indentLevel * 18);
@@ -764,29 +764,29 @@ namespace CCLBStudio.SmartConfig
                 }
                 else
                 {
-                    entry.type = (RemoteConfigValueType)EditorGUILayout.EnumPopup("Type", entry.type, GUILayout.Width(_settings.typeWidth));
+                    entry.type = (SmartConfigValueType)EditorGUILayout.EnumPopup("Type", entry.type, GUILayout.Width(_settings.typeWidth));
                     float valueWidth = _settings.valueWidth + 100f;
 
                     switch (entry.type)
                     {
-                        case RemoteConfigValueType.Int:
+                        case SmartConfigValueType.Int:
                             entry.intValue = EditorGUILayout.IntField("Value", entry.intValue, GUILayout.Width(valueWidth));
                             break;
                     
-                        case RemoteConfigValueType.Float:
+                        case SmartConfigValueType.Float:
                             entry.floatValue = EditorGUILayout.FloatField("Value", entry.floatValue, GUILayout.Width(valueWidth));
                             break;
                     
-                        case RemoteConfigValueType.Bool:
+                        case SmartConfigValueType.Bool:
                             entry.boolValue = EditorGUILayout.Toggle("Value", entry.boolValue, GUILayout.Width(valueWidth));
 
                             break;
                     
-                        case RemoteConfigValueType.String:
+                        case SmartConfigValueType.String:
                             entry.stringValue = EditorGUILayout.TextField("Value", entry.stringValue, GUILayout.Width(valueWidth));
                             break;
                     
-                        case RemoteConfigValueType.Translatable:
+                        case SmartConfigValueType.Translatable:
                             EditorGUILayout.HelpBox("Translatable is not currently supported as platform entry.", MessageType.Error);
                             break;
                     }
@@ -922,8 +922,8 @@ namespace CCLBStudio.SmartConfig
 
         private void RefreshReportEntries()
         {
-            _usageReportEntries = new Dictionary<int, List<RemoteConfigEditorEntry>> { { 0, new List<RemoteConfigEditorEntry>() } };
-            Dictionary<string, RemoteConfigEditorEntry> addedEntries = new Dictionary<string, RemoteConfigEditorEntry>();
+            _usageReportEntries = new Dictionary<int, List<SmartConfigEditorEntry>> { { 0, new List<SmartConfigEditorEntry>() } };
+            Dictionary<string, SmartConfigEditorEntry> addedEntries = new Dictionary<string, SmartConfigEditorEntry>();
 
             foreach (var editorEntry in _editorData.allAppEntries.Concat(_editorData.platformEntries.SelectMany(x => x.Value)))
             {
@@ -948,7 +948,7 @@ namespace CCLBStudio.SmartConfig
                 }
                 else
                 {
-                    _usageReportEntries[trackedPair.Value] = new List<RemoteConfigEditorEntry> { editorEntry };
+                    _usageReportEntries[trackedPair.Value] = new List<SmartConfigEditorEntry> { editorEntry };
                 }
             }
 
@@ -1072,7 +1072,7 @@ namespace CCLBStudio.SmartConfig
             if(GUI.Button(rect, "+ Add New App Entry"))
             {
                 GenericMenu menu = new GenericMenu();
-                var values = Enum.GetValues(typeof(RemoteConfigValueType));
+                var values = Enum.GetValues(typeof(SmartConfigValueType));
                 foreach (var elem in values)
                 {
                     menu.AddItem(new GUIContent(elem.ToString()), false, AddNewAppEntry, elem);
@@ -1084,7 +1084,7 @@ namespace CCLBStudio.SmartConfig
 
         private void AddNewAppEntry(object type)
         {
-            RemoteConfigValueType t = (RemoteConfigValueType)type;
+            SmartConfigValueType t = (SmartConfigValueType)type;
             _editorData.NotifyNewAppEntryAdded(t);
             RefreshDrawingData();
             ScrollToBottom();
@@ -1108,7 +1108,7 @@ namespace CCLBStudio.SmartConfig
             EditorGUIUtility.labelWidth = 80f;
             
             EditorGUI.BeginChangeCheck();
-            _typeFilter = (RemoteConfigValueTypeFilter)EditorGUILayout.EnumPopup("Filter By", _typeFilter, GUILayout.Width(_settings.typeWidth + EditorGUIUtility.labelWidth));
+            _typeFilter = (SmartConfigValueTypeFilter)EditorGUILayout.EnumPopup("Filter By", _typeFilter, GUILayout.Width(_settings.typeWidth + EditorGUIUtility.labelWidth));
             if (EditorGUI.EndChangeCheck())
             {
                 RefreshDrawingData();
@@ -1185,7 +1185,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void DrawAppEntryBoundingBox(RemoteConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
+        private void DrawAppEntryBoundingBox(SmartConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
         {
             if (!shouldDraw)
             {
@@ -1199,7 +1199,7 @@ namespace CCLBStudio.SmartConfig
             rect.height = EditorGUIUtility.singleLineHeight;
         }
 
-        private void DrawAppEntry(RemoteConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
+        private void DrawAppEntry(SmartConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
         { 
             float startPosX = rect.x;
             float startHeight = rect.height;
@@ -1225,7 +1225,7 @@ namespace CCLBStudio.SmartConfig
             rect.height = startHeight;
         }
 
-        private void DrawKeyEntry(RemoteConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
+        private void DrawKeyEntry(SmartConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
         {
             float deleteBtnOffset = _deleteDataEntryButtonStyle.fixedWidth + _settings.boxBorderOffset * 2;
             rect.x += deleteBtnOffset;
@@ -1268,7 +1268,7 @@ namespace CCLBStudio.SmartConfig
             EditorGUI.HelpBox(rect, "This key is not valid !", MessageType.Error);
         }
 
-        private void DrawTypeEntry(RemoteConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
+        private void DrawTypeEntry(SmartConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
         {
             rect.x += rect.width + 10;
             rect.width = _settings.typeWidth - 10;
@@ -1280,16 +1280,16 @@ namespace CCLBStudio.SmartConfig
             }
             
             EditorGUI.BeginChangeCheck();
-            entry.type = (RemoteConfigValueType)EditorGUI.EnumPopup(rect, entry.type);
+            entry.type = (SmartConfigValueType)EditorGUI.EnumPopup(rect, entry.type);
             if (EditorGUI.EndChangeCheck())
             {
                 _editorData.NotifyEntryTypeChanged(entry);
                 RefreshDrawingData();
-                _requireFilterFlush = _typeFilter != RemoteConfigValueTypeFilter.None;
+                _requireFilterFlush = _typeFilter != SmartConfigValueTypeFilter.None;
             }
         }
 
-        private void DrawValueEntry(RemoteConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
+        private void DrawValueEntry(SmartConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
         {
             rect.x += rect.width + 10;
             rect.width = _settings.valueWidth - 10;
@@ -1302,7 +1302,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void DrawCategoryEntry(RemoteConfigEditorEntry editorEntry, ref Rect rect, bool shouldDraw)
+        private void DrawCategoryEntry(SmartConfigEditorEntry editorEntry, ref Rect rect, bool shouldDraw)
         {
             rect.x += rect.width + 10;
             float posY = rect.y;
@@ -1341,7 +1341,7 @@ namespace CCLBStudio.SmartConfig
             rect.y = posY;
         }
 
-        private void DrawDeletionButton(RemoteConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
+        private void DrawDeletionButton(SmartConfigEditorEntry entry, ref Rect rect, bool shouldDraw)
         {
             _deleteBtnRect.y = rect.y;
             _deleteBtnRect.x = rect.x + _settings.boxBorderOffset;
@@ -1399,7 +1399,7 @@ namespace CCLBStudio.SmartConfig
             string directoryPath = Path.GetDirectoryName(servicePath);
             string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, SmartConfigService.FileName));
             
-            string absolutePath = RcIOExtender.RelativeToAbsolutePath(projectRelativePath);
+            string absolutePath = ScIOExtender.RelativeToAbsolutePath(projectRelativePath);
             File.WriteAllText(absolutePath, "{\n \"version\": 1,\n \"platforms\": [], \n \"entries\": [] \n}");
             
             AssetDatabase.Refresh();
@@ -1414,11 +1414,11 @@ namespace CCLBStudio.SmartConfig
             string directoryPath = Path.GetDirectoryName(servicePath) + "/Editor";
             string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, "RC-EditorDataSaver.asset"));
 
-            var so = CreateInstance<RemoteConfigEditorData>();
+            var so = CreateInstance<SmartConfigEditorData>();
             AssetDatabase.CreateAsset(so, projectRelativePath);
             AssetDatabase.Refresh();
 
-            _editorData = AssetDatabase.LoadAssetAtPath<RemoteConfigEditorData>(projectRelativePath);
+            _editorData = AssetDatabase.LoadAssetAtPath<SmartConfigEditorData>(projectRelativePath);
         }
 
         #endregion

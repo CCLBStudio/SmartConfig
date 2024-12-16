@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
 {
-    public static class SystemLanguageExtender
+    public static class ScSystemLanguageExtender
     {
 
         public static string ToTwoLettersCountry(this SystemLanguage lang)

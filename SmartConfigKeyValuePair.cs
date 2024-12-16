@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigKeyValuePair<TK, TV>
+    public class SmartConfigKeyValuePair<TK, TV>
     {
         public TK Key
         {
@@ -21,7 +21,7 @@ namespace CCLBStudio.SmartConfig
         [SerializeField] private TK key;
         [SerializeField] private TV value;
 
-        public RemoteConfigKeyValuePair(TK key, TV value)
+        public SmartConfigKeyValuePair(TK key, TV value)
         {
             this.key = key;
             this.value = value;

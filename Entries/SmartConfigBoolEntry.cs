@@ -3,7 +3,7 @@ using System;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigBoolEntry : RemoteConfigEntry
+    public class SmartConfigBoolEntry : SmartConfigEntry
     {
         public bool value;
     }

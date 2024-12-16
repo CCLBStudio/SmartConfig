@@ -9,25 +9,25 @@ using Object = UnityEngine.Object;
 
 namespace CCLBStudio.SmartConfig
 {
-    public class RemoteConfigEditorData : ScriptableObject
+    public class SmartConfigEditorData : ScriptableObject
     {
-        public RemoteConfigEditWindowSettings settings;
-        public List<RemoteConfigEditorLanguage> allLanguages= new ();
-        public List<RemoteConfigKeyValuePair<string, string>> allCategories = new ();
-        public List<RemoteConfigKeyValuePair<RuntimePlatform, List<RemoteConfigEditorEntry>>> platformEntries= new ();
-        public List<RemoteConfigEditorEntry> allAppEntries= new ();
+        public SmartConfigEditWindowSettings settings;
+        public List<SmartConfigEditorLanguage> allLanguages= new ();
+        public List<SmartConfigKeyValuePair<string, string>> allCategories = new ();
+        public List<SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>> platformEntries= new ();
+        public List<SmartConfigEditorEntry> allAppEntries= new ();
         
-        [NonSerialized] private Dictionary<string, RemoteConfigEditorEntry> _allValidAppEntries;
-        [NonSerialized] private Dictionary<RuntimePlatform, Dictionary<string, RemoteConfigEditorEntry>> _allValidPlatformEntries;
+        [NonSerialized] private Dictionary<string, SmartConfigEditorEntry> _allValidAppEntries;
+        [NonSerialized] private Dictionary<RuntimePlatform, Dictionary<string, SmartConfigEditorEntry>> _allValidPlatformEntries;
 
-        [NonSerialized] private Dictionary<string, List<RemoteConfigEditorEntry>> _categoryEntries;
+        [NonSerialized] private Dictionary<string, List<SmartConfigEditorEntry>> _categoryEntries;
 
-        [NonSerialized] private List<RemoteConfigEditorEntry> _appIntEntries;
-        [NonSerialized] private List<RemoteConfigEditorEntry> _appFloatEntries;
-        [NonSerialized] private List<RemoteConfigEditorEntry> _appBoolEntries;
-        [NonSerialized] private List<RemoteConfigEditorEntry> _appStringEntries;
-        [NonSerialized] private List<RemoteConfigEditorEntry> _appTranslatableEntries;
-        [NonSerialized] private Dictionary<RemoteConfigEditorEntry, int> _appEntriesIndexes;
+        [NonSerialized] private List<SmartConfigEditorEntry> _appIntEntries;
+        [NonSerialized] private List<SmartConfigEditorEntry> _appFloatEntries;
+        [NonSerialized] private List<SmartConfigEditorEntry> _appBoolEntries;
+        [NonSerialized] private List<SmartConfigEditorEntry> _appStringEntries;
+        [NonSerialized] private List<SmartConfigEditorEntry> _appTranslatableEntries;
+        [NonSerialized] private Dictionary<SmartConfigEditorEntry, int> _appEntriesIndexes;
 
         #region Initialization Methods
 
@@ -35,7 +35,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!settings)
             {
-                settings = RcEditorExtender.LoadScriptableAsset<RemoteConfigEditWindowSettings>();
+                settings = ScEditorExtender.LoadScriptableAsset<SmartConfigEditWindowSettings>();
             }
             
             foreach (var editorEntry in allAppEntries.Concat(platformEntries.SelectMany(pair => pair.Value)))
@@ -46,11 +46,11 @@ namespace CCLBStudio.SmartConfig
             BuildAll();
         }
 
-        public void LoadFrom(RemoteConfigData rc)
+        public void LoadFrom(SmartConfigData rc)
         {
-            allLanguages = new List<RemoteConfigEditorLanguage>(rc.allLanguages.Count);
-            platformEntries = new List<RemoteConfigKeyValuePair<RuntimePlatform, List<RemoteConfigEditorEntry>>>();
-            allAppEntries = new List<RemoteConfigEditorEntry>(rc.allEntries.Count);
+            allLanguages = new List<SmartConfigEditorLanguage>(rc.allLanguages.Count);
+            platformEntries = new List<SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>>();
+            allAppEntries = new List<SmartConfigEditorEntry>(rc.allEntries.Count);
             
             allCategories.RemoveAll(x => !rc.allCategories.Contains(x.Key));
             foreach (var category in rc.allCategories)
@@ -58,13 +58,13 @@ namespace CCLBStudio.SmartConfig
                 int index = allCategories.FindIndex(x => x.Key == category);
                 if (index < 0)
                 {
-                    allCategories.Add(new RemoteConfigKeyValuePair<string, string>(category, string.Empty));
+                    allCategories.Add(new SmartConfigKeyValuePair<string, string>(category, string.Empty));
                 }
             }
 
             foreach (var lang in rc.allLanguages)
             {
-                allLanguages.Add(new RemoteConfigEditorLanguage
+                allLanguages.Add(new SmartConfigEditorLanguage
                 {
                     language = lang,
                     flag = settings.languageFlags.Find(x => x.Key == lang)?.Value,
@@ -75,19 +75,19 @@ namespace CCLBStudio.SmartConfig
 
             foreach (var platformEntry in rc.platformEntries)
             {
-                List<RemoteConfigEditorEntry> editorEntries = new List<RemoteConfigEditorEntry>(platformEntry.Value.Count);
+                List<SmartConfigEditorEntry> editorEntries = new List<SmartConfigEditorEntry>(platformEntry.Value.Count);
                 foreach (var entry in platformEntry.Value)
                 {
-                    var editorEntry = new RemoteConfigEditorEntry(entry, this);
+                    var editorEntry = new SmartConfigEditorEntry(entry, this);
                     editorEntries.Add(editorEntry);
                 }
 
-                platformEntries.Add(new RemoteConfigKeyValuePair<RuntimePlatform, List<RemoteConfigEditorEntry>>(platformEntry.Key, editorEntries));
+                platformEntries.Add(new SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>(platformEntry.Key, editorEntries));
             }
             
             foreach (var entry in rc.allEntries)
             {
-                var editorEntry = new RemoteConfigEditorEntry(entry, this);
+                var editorEntry = new SmartConfigEditorEntry(entry, this);
                 allAppEntries.Add(editorEntry);
             }
 
@@ -127,23 +127,23 @@ namespace CCLBStudio.SmartConfig
                 }
             }
             
-            RemoteConfigJson jsonData = new RemoteConfigJson
+            SmartConfigJson jsonData = new SmartConfigJson
             {
-                platforms = new List<RemoteConfigPlatformEntryJson>(platformEntries.Count),
-                entries = new List<RemoteConfigEntryJson>(allAppEntries.Count),
+                platforms = new List<SmartConfigPlatformEntryJson>(platformEntries.Count),
+                entries = new List<SmartConfigEntryJson>(allAppEntries.Count),
                 version = 1 // tmp
             };
             foreach (var pair in platformEntries)
             {
-                var platformConfig = new RemoteConfigPlatformEntryJson
+                var platformConfig = new SmartConfigPlatformEntryJson
                 {
                     platform = pair.Key,
-                    entries = new List<RemoteConfigEntryJson>(pair.Value.Count)
+                    entries = new List<SmartConfigEntryJson>(pair.Value.Count)
                 };
 
-                foreach (RemoteConfigEditorEntry editorEntry in pair.Value)
+                foreach (SmartConfigEditorEntry editorEntry in pair.Value)
                 {
-                    platformConfig.entries.Add(editorEntry.ToRemoteConfigJson());
+                    platformConfig.entries.Add(editorEntry.ToSmartConfigJson());
                 }
                 
                 jsonData.platforms.Add(platformConfig);
@@ -151,7 +151,7 @@ namespace CCLBStudio.SmartConfig
 
             foreach (var editorEntry in allAppEntries.Where(x => x.isValid))
             {
-                jsonData.entries.Add(editorEntry.ToRemoteConfigJson());
+                jsonData.entries.Add(editorEntry.ToSmartConfigJson());
             }
 
             string json = JsonConvert.SerializeObject(jsonData, Formatting.Indented);
@@ -171,7 +171,7 @@ namespace CCLBStudio.SmartConfig
             var rcService = GetRcService();
             if (!rcService)
             {
-                Debug.LogError("Remote config service is null !");
+                Debug.LogError("Smart config service is null !");
                 return;
             }
 
@@ -183,24 +183,24 @@ namespace CCLBStudio.SmartConfig
             var rcService = GetRcService();
             if (!rcService)
             {
-                Debug.LogError("Remote config service is null !");
+                Debug.LogError("Smart config service is null !");
                 return;
             }
             
             rcService.TransferStrategy.DownloadJson(onProgress
-                , json => { OnRemoteJsonFetched(json, onDataRefreshed); }
-                , () => OnRemoteJsonDownloadFailed(onDownloadFailed));
+                , json => { OnSmartJsonFetched(json, onDataRefreshed); }
+                , () => OnSmartJsonDownloadFailed(onDownloadFailed));
         }
 
-        private void OnRemoteJsonFetched(string json, Action onDataRefreshed)
+        private void OnSmartJsonFetched(string json, Action onDataRefreshed)
         {
-            var rc = new RemoteConfigData(json);
+            var rc = new SmartConfigData(json);
             LoadFrom(rc);
             WriteJson();
             onDataRefreshed?.Invoke();
         }
 
-        private void OnRemoteJsonDownloadFailed(Action onFail)
+        private void OnSmartJsonDownloadFailed(Action onFail)
         {
             Debug.LogError("Unable to fetch the remote json.");
             onFail?.Invoke();
@@ -217,7 +217,7 @@ namespace CCLBStudio.SmartConfig
                 return false;
             }
             
-            allCategories.Add(new RemoteConfigKeyValuePair<string, string>(newCategory, string.Empty));
+            allCategories.Add(new SmartConfigKeyValuePair<string, string>(newCategory, string.Empty));
 
             if (_categoryEntries == null)
             {
@@ -225,14 +225,14 @@ namespace CCLBStudio.SmartConfig
             }
             else
             {
-                _categoryEntries.Add(newCategory, new List<RemoteConfigEditorEntry>());
+                _categoryEntries.Add(newCategory, new List<SmartConfigEditorEntry>());
             }
             
             SetDirty();
             return true;
         }
 
-        public void NotifyEntryCategoryChanged(RemoteConfigEditorEntry editorEntry, int index)
+        public void NotifyEntryCategoryChanged(SmartConfigEditorEntry editorEntry, int index)
         {
             if (index <= 0)
             {
@@ -296,7 +296,7 @@ namespace CCLBStudio.SmartConfig
             SetDirty();
         }
 
-        private void CheckEntryCategoryPrefix(RemoteConfigEditorEntry editorEntry)
+        private void CheckEntryCategoryPrefix(SmartConfigEditorEntry editorEntry)
         {
             if (string.IsNullOrEmpty(editorEntry.category) || editorEntry.categoryIndex <= 0)
             {
@@ -316,7 +316,7 @@ namespace CCLBStudio.SmartConfig
         
         private void BuildAndCheckCategoryEntries()
         {
-            _categoryEntries = new Dictionary<string, List<RemoteConfigEditorEntry>>(allCategories.Count);
+            _categoryEntries = new Dictionary<string, List<SmartConfigEditorEntry>>(allCategories.Count);
             var allEntriesWithCategory = allAppEntries.Where(x => !string.IsNullOrEmpty(x.category));
             Dictionary<string, int> categoryIndexes = new Dictionary<string, int>();
 
@@ -324,7 +324,7 @@ namespace CCLBStudio.SmartConfig
             {
                 if (!_categoryEntries.ContainsKey(editorEntry.category))
                 {
-                    _categoryEntries.Add(editorEntry.category, new List<RemoteConfigEditorEntry>());
+                    _categoryEntries.Add(editorEntry.category, new List<SmartConfigEditorEntry>());
                 }
                 
                 _categoryEntries[editorEntry.category].Add(editorEntry);
@@ -335,7 +335,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void ResetEntryCategory(RemoteConfigEditorEntry editorEntry)
+        private void ResetEntryCategory(SmartConfigEditorEntry editorEntry)
         {
             editorEntry.categoryIndex = 0;
             editorEntry.category = string.Empty;
@@ -348,7 +348,7 @@ namespace CCLBStudio.SmartConfig
 
         public void NotifyLanguageAdded(SystemLanguage newLanguage)
         {
-            var newLang = new RemoteConfigEditorLanguage
+            var newLang = new SmartConfigEditorLanguage
             {
                 language = newLanguage,
                 flag = settings.languageFlags.Find(x => x.Key == newLanguage)?.Value,
@@ -405,25 +405,24 @@ namespace CCLBStudio.SmartConfig
 
         public void AddNewPlatform(RuntimePlatform newPlatform)
         {
-            //platformEntries.Add(newPlatform, new List<RemoteConfigEditorEntry>
-            platformEntries.Add(new RemoteConfigKeyValuePair<RuntimePlatform, List<RemoteConfigEditorEntry>>(newPlatform, new List<RemoteConfigEditorEntry>
+            platformEntries.Add(new SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>(newPlatform, new List<SmartConfigEditorEntry>
             {
-                new RemoteConfigEditorEntry(RemoteConfigValueType.String, this)
+                new SmartConfigEditorEntry(SmartConfigValueType.String, this)
                 {
                     key = "app_prod_versions",
                     stringValue = "0.1.0"
                 },
-                new RemoteConfigEditorEntry(RemoteConfigValueType.String, this)
+                new SmartConfigEditorEntry(SmartConfigValueType.String, this)
                 {
                     key = "app_review_versions",
                     stringValue = "0.0.0"
                 },
-                new RemoteConfigEditorEntry(RemoteConfigValueType.Bool, this)
+                new SmartConfigEditorEntry(SmartConfigValueType.Bool, this)
                 {
                     key = "app_maintenance_mode_enabled",
                     boolValue = false
                 },
-                new RemoteConfigEditorEntry(RemoteConfigValueType.String, this)
+                new SmartConfigEditorEntry(SmartConfigValueType.String, this)
                 {
                     key = "app_update_url",
                     stringValue = string.Empty
@@ -456,7 +455,7 @@ namespace CCLBStudio.SmartConfig
 
             var entries = platformEntries[index].Value;
 
-            RemoteConfigEditorEntry newEntry = new RemoteConfigEditorEntry(RemoteConfigValueType.String, this);
+            SmartConfigEditorEntry newEntry = new SmartConfigEditorEntry(SmartConfigValueType.String, this);
             entries.Add(newEntry);
             CheckNewPlatformEntryValidity(platform, newEntry);
             SetDirty();
@@ -468,7 +467,7 @@ namespace CCLBStudio.SmartConfig
 
         private void BuildAndCheckValidAppEntries()
         {
-            _allValidAppEntries = new Dictionary<string, RemoteConfigEditorEntry>(allAppEntries.Count);
+            _allValidAppEntries = new Dictionary<string, SmartConfigEditorEntry>(allAppEntries.Count);
 
             foreach (var entry in allAppEntries)
             {
@@ -478,11 +477,11 @@ namespace CCLBStudio.SmartConfig
 
         private void BuildAndCheckValidPlatformEntries()
         {
-            _allValidPlatformEntries = new Dictionary<RuntimePlatform, Dictionary<string, RemoteConfigEditorEntry>>(platformEntries.Count);
+            _allValidPlatformEntries = new Dictionary<RuntimePlatform, Dictionary<string, SmartConfigEditorEntry>>(platformEntries.Count);
             
             foreach (var pair in platformEntries)
             {
-                _allValidPlatformEntries[pair.Key] = new Dictionary<string, RemoteConfigEditorEntry>(pair.Value.Count);
+                _allValidPlatformEntries[pair.Key] = new Dictionary<string, SmartConfigEditorEntry>(pair.Value.Count);
                 foreach (var editorEntry in pair.Value)
                 {
                     CheckNewPlatformEntryValidity(pair.Key, editorEntry);
@@ -490,7 +489,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void CheckNewAppEntryValidity(RemoteConfigEditorEntry editorEntry)
+        private void CheckNewAppEntryValidity(SmartConfigEditorEntry editorEntry)
         {
             if (_allValidAppEntries == null)
             {
@@ -507,7 +506,7 @@ namespace CCLBStudio.SmartConfig
             _allValidAppEntries.Add(editorEntry.key, editorEntry);
         }
 
-        private void CheckNewPlatformEntryValidity(RuntimePlatform platform, RemoteConfigEditorEntry editorEntry)
+        private void CheckNewPlatformEntryValidity(RuntimePlatform platform, SmartConfigEditorEntry editorEntry)
         {
             if (_allValidPlatformEntries == null)
             {
@@ -531,7 +530,7 @@ namespace CCLBStudio.SmartConfig
             platformDictionary.Add(editorEntry.key, editorEntry);
         }
 
-        private void CheckAppEntryKey(string oldKey, RemoteConfigEditorEntry editorEntry)
+        private void CheckAppEntryKey(string oldKey, SmartConfigEditorEntry editorEntry)
         {
             if (_allValidAppEntries == null)
             {
@@ -553,7 +552,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void CheckPlatformEntryKey(RuntimePlatform platform,  string oldKey, RemoteConfigEditorEntry editorEntry)
+        private void CheckPlatformEntryKey(RuntimePlatform platform,  string oldKey, SmartConfigEditorEntry editorEntry)
         {
             if (_allValidPlatformEntries == null)
             {
@@ -582,28 +581,28 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        public void NotifyAppEntryKeyChanged(string oldKey, RemoteConfigEditorEntry editorEntry)
+        public void NotifyAppEntryKeyChanged(string oldKey, SmartConfigEditorEntry editorEntry)
         {
             CheckAppEntryKey(oldKey, editorEntry);
             CheckEntryCategoryPrefix(editorEntry);
             SetDirty();
         }
 
-        public void NotifyPlatformEntryKeyChanged(RuntimePlatform platform, string oldKey, RemoteConfigEditorEntry editorEntry)
+        public void NotifyPlatformEntryKeyChanged(RuntimePlatform platform, string oldKey, SmartConfigEditorEntry editorEntry)
         {
             CheckPlatformEntryKey(platform, oldKey, editorEntry);
             SetDirty();
         }
 
-        public void NotifyEntryTypeChanged(RemoteConfigEditorEntry editorEntry)
+        public void NotifyEntryTypeChanged(SmartConfigEditorEntry editorEntry)
         {
             editorEntry.NotifyTypeChange();
             SetDirty();
         }
 
-        public void NotifyNewAppEntryAdded(RemoteConfigValueType type)
+        public void NotifyNewAppEntryAdded(SmartConfigValueType type)
         {
-            RemoteConfigEditorEntry newEntry = new RemoteConfigEditorEntry(type, this);
+            SmartConfigEditorEntry newEntry = new SmartConfigEditorEntry(type, this);
             allAppEntries.Add(newEntry);
 
             AddNewEntryIndex(newEntry);
@@ -612,7 +611,7 @@ namespace CCLBStudio.SmartConfig
             SetDirty();
         }
 
-        public void NotifyAppEntryDeleted(RemoteConfigEditorEntry editorEntry)
+        public void NotifyAppEntryDeleted(SmartConfigEditorEntry editorEntry)
         {
             int index = GetAppEntryIndex(editorEntry);
             if (index >= 0)
@@ -630,7 +629,7 @@ namespace CCLBStudio.SmartConfig
 
         #region Index Methods
 
-        private int GetAppEntryIndex(RemoteConfigEditorEntry editorEntry)
+        private int GetAppEntryIndex(SmartConfigEditorEntry editorEntry)
         {
             if (_appEntriesIndexes == null)
             {
@@ -642,7 +641,7 @@ namespace CCLBStudio.SmartConfig
 
         private void BuildAppEntryIndexes()
         {
-            _appEntriesIndexes = new Dictionary<RemoteConfigEditorEntry, int>(allAppEntries.Count);
+            _appEntriesIndexes = new Dictionary<SmartConfigEditorEntry, int>(allAppEntries.Count);
 
             for (int i = 0; i < allAppEntries.Count; i++)
             {
@@ -650,7 +649,7 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void AddNewEntryIndex(RemoteConfigEditorEntry editorEntry)
+        private void AddNewEntryIndex(SmartConfigEditorEntry editorEntry)
         {
             if (_appEntriesIndexes == null)
             {
@@ -670,16 +669,16 @@ namespace CCLBStudio.SmartConfig
 
         #region Filter Methods
 
-        public List<RemoteConfigEditorEntry> GetAppEntriesForFilter(RemoteConfigValueTypeFilter filter)
+        public List<SmartConfigEditorEntry> GetAppEntriesForFilter(SmartConfigValueTypeFilter filter)
         {
             return filter switch
             {
-                RemoteConfigValueTypeFilter.None => allAppEntries,
-                RemoteConfigValueTypeFilter.Int => GetAppIntEntries(),
-                RemoteConfigValueTypeFilter.Float => GetAppFloatEntries(),
-                RemoteConfigValueTypeFilter.Bool => GetAppBoolEntries(),
-                RemoteConfigValueTypeFilter.String => GetAppStringEntries(),
-                RemoteConfigValueTypeFilter.Translatable => GetAppTranslatableEntries(),
+                SmartConfigValueTypeFilter.None => allAppEntries,
+                SmartConfigValueTypeFilter.Int => GetAppIntEntries(),
+                SmartConfigValueTypeFilter.Float => GetAppFloatEntries(),
+                SmartConfigValueTypeFilter.Bool => GetAppBoolEntries(),
+                SmartConfigValueTypeFilter.String => GetAppStringEntries(),
+                SmartConfigValueTypeFilter.Translatable => GetAppTranslatableEntries(),
                 _ => throw new ArgumentOutOfRangeException(nameof(filter), filter, null)
             };
         }
@@ -695,62 +694,62 @@ namespace CCLBStudio.SmartConfig
 
         private void BuildAllFilteredEntries()
         {
-            _appIntEntries = new List<RemoteConfigEditorEntry>();
-            _appFloatEntries = new List<RemoteConfigEditorEntry>();
-            _appBoolEntries = new List<RemoteConfigEditorEntry>();
-            _appStringEntries = new List<RemoteConfigEditorEntry>();
-            _appTranslatableEntries = new List<RemoteConfigEditorEntry>();
+            _appIntEntries = new List<SmartConfigEditorEntry>();
+            _appFloatEntries = new List<SmartConfigEditorEntry>();
+            _appBoolEntries = new List<SmartConfigEditorEntry>();
+            _appStringEntries = new List<SmartConfigEditorEntry>();
+            _appTranslatableEntries = new List<SmartConfigEditorEntry>();
 
             foreach (var editorEntry in allAppEntries)
             {
                 switch (editorEntry.type)
                 {
-                    case RemoteConfigValueType.Int:
+                    case SmartConfigValueType.Int:
                         _appIntEntries.Add(editorEntry);
                         break;
                     
-                    case RemoteConfigValueType.Float:
+                    case SmartConfigValueType.Float:
                         _appFloatEntries.Add(editorEntry);
                         break;
                     
-                    case RemoteConfigValueType.Bool:
+                    case SmartConfigValueType.Bool:
                         _appBoolEntries.Add(editorEntry);
                         break;
                     
-                    case RemoteConfigValueType.String:
+                    case SmartConfigValueType.String:
                         _appStringEntries.Add(editorEntry);
                         break;
                     
-                    case RemoteConfigValueType.Translatable:
+                    case SmartConfigValueType.Translatable:
                         _appTranslatableEntries.Add(editorEntry);
                         break;
                 }
             }
         }
 
-        private List<RemoteConfigEditorEntry> GetAppIntEntries()
+        private List<SmartConfigEditorEntry> GetAppIntEntries()
         {
-            return _appIntEntries ??= allAppEntries.Where(x => x.type == RemoteConfigValueType.Int).ToList();
+            return _appIntEntries ??= allAppEntries.Where(x => x.type == SmartConfigValueType.Int).ToList();
         }
 
-        private List<RemoteConfigEditorEntry> GetAppFloatEntries()
+        private List<SmartConfigEditorEntry> GetAppFloatEntries()
         {
-            return _appFloatEntries ??= allAppEntries.Where(x => x.type == RemoteConfigValueType.Float).ToList();
+            return _appFloatEntries ??= allAppEntries.Where(x => x.type == SmartConfigValueType.Float).ToList();
         }
         
-        private List<RemoteConfigEditorEntry> GetAppBoolEntries()
+        private List<SmartConfigEditorEntry> GetAppBoolEntries()
         {
-            return _appBoolEntries ??= allAppEntries.Where(x => x.type == RemoteConfigValueType.Bool).ToList();
+            return _appBoolEntries ??= allAppEntries.Where(x => x.type == SmartConfigValueType.Bool).ToList();
         }
         
-        private List<RemoteConfigEditorEntry> GetAppStringEntries()
+        private List<SmartConfigEditorEntry> GetAppStringEntries()
         {
-            return _appStringEntries ??= allAppEntries.Where(x => x.type == RemoteConfigValueType.String).ToList();
+            return _appStringEntries ??= allAppEntries.Where(x => x.type == SmartConfigValueType.String).ToList();
         }
         
-        private List<RemoteConfigEditorEntry> GetAppTranslatableEntries()
+        private List<SmartConfigEditorEntry> GetAppTranslatableEntries()
         {
-            return _appTranslatableEntries ??= allAppEntries.Where(x => x.type == RemoteConfigValueType.Translatable).ToList();
+            return _appTranslatableEntries ??= allAppEntries.Where(x => x.type == SmartConfigValueType.Translatable).ToList();
         }
 
         #endregion
@@ -775,10 +774,10 @@ namespace CCLBStudio.SmartConfig
 
         private SmartConfigService GetRcService()
         {
-            var service = RcEditorExtender.LoadScriptableAsset<SmartConfigService>();
+            var service = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
             if (!service || !service.LocalTranslationFile)
             {
-                Debug.LogError("Problem with remote config service ! Unable to write the json file.");
+                Debug.LogError("Problem with smart config service ! Unable to write the json file.");
                 return null;
             }
 
@@ -788,7 +787,7 @@ namespace CCLBStudio.SmartConfig
         private string GetJsonFileAbsolutePath(Object localFileAsset)
         {
             string relativePath = AssetDatabase.GetAssetPath(localFileAsset);
-            return RcIOExtender.RelativeToAbsolutePath(relativePath);
+            return ScIOExtender.RelativeToAbsolutePath(relativePath);
         }
 
         #endregion

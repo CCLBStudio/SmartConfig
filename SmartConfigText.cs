@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [RequireComponent(typeof(TextMeshProUGUI))]
-    public class RemoteConfigText : MonoBehaviour, IRemoteConfigListener
+    public class SmartConfigText : MonoBehaviour, ISmartConfigListener
     {
         [SerializeField] private SmartConfigService service;
         [SerializeField] private string key;

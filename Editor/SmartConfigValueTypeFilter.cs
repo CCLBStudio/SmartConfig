@@ -1,6 +1,6 @@
 namespace CCLBStudio.SmartConfig
 {
-    public enum RemoteConfigValueTypeFilter
+    public enum SmartConfigValueTypeFilter
     {
         None, Int, Float, Bool, String, Translatable
     }

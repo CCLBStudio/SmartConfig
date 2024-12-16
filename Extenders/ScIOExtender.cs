@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
 {
-    public static class RcIOExtender
+    public static class ScIOExtender
     {
         public static string GenerateUniquePath(string originalPath)
         {

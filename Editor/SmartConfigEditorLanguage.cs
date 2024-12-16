@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CCLBStudio.SmartConfig
 {
     [Serializable]
-    public class RemoteConfigEditorLanguage
+    public class SmartConfigEditorLanguage
     {
         public SystemLanguage language;
         public string twoLettersIsoDisplay;
