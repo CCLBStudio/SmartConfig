@@ -1,22 +1,24 @@
-using CCLBStudio.SmartConfig;
 using TMPro;
 using UnityEngine;
 
-public class SmartConfigFileReadyChecker : MonoBehaviour, ISmartConfigListener
+namespace CCLBStudio.SmartConfig.Demo
 {
-    [SerializeField] private SmartConfigService service;
-
-    private void Start()
+    public class SmartConfigFileReadyChecker : MonoBehaviour, ISmartConfigListener
     {
-        service.AddListener(this);
-    }
+        [SerializeField] private SmartConfigService service;
 
-    public void OnRemoteConfigLoaded()
-    {
-        GetComponent<TextMeshProUGUI>().text = "Config file ready : true !";
-    }
+        private void Start()
+        {
+            service.AddListener(this);
+        }
 
-    public void OnRemoteConfigLanguageSelected()
-    {
+        public void OnRemoteConfigLoaded()
+        {
+            GetComponent<TextMeshProUGUI>().text = "Config file ready : true !";
+        }
+
+        public void OnRemoteConfigLanguageSelected()
+        {
+        }
     }
 }

@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a8513a863d06124fbdd79ff47dd74cd, type: 3}
-  m_Name: RC-EditorDataSaver
+  m_Name: SC-EditorDataSaver
   m_EditorClassIdentifier: 
   settings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   allLanguages:

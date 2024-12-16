@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cf3cc29e14b70bb43b26469f34a663f8, type: 3}
-  m_Name: RC-EditWindowSettings
+  m_Name: SC-EditWindowSettings
   m_EditorClassIdentifier: 
   languageFontSize: 15
   languageElementHeight: 30
