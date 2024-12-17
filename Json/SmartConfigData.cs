@@ -20,12 +20,12 @@ namespace CCLBStudio.SmartConfig
         public Dictionary<string, SmartConfigTranslatableEntry> translatableEntries;
 
         /// <summary>
-        /// Build the remote config data from the relevant json information.
+        /// Build the smart config data from the provided json information.
         /// </summary>
         /// <param name="json">The json to build from</param>
         public SmartConfigData(string json)
         {
-            SmartConfigJson rc = JsonUtility.FromJson<SmartConfigJson>(json);
+            SmartConfigJson sc = JsonUtility.FromJson<SmartConfigJson>(json);
             platformEntries = new Dictionary<RuntimePlatform, List<SmartConfigEntry>>();
             allEntries = new List<SmartConfigEntry>();
             allLanguages = new List<SystemLanguage>();
@@ -36,7 +36,7 @@ namespace CCLBStudio.SmartConfig
             stringEntries = new Dictionary<string, SmartConfigStringEntry>();
             translatableEntries = new Dictionary<string, SmartConfigTranslatableEntry>();
 
-            foreach (var jsonPlatform in rc.platforms)
+            foreach (var jsonPlatform in sc.platforms)
             {
                 bool platformCastSucceeded = ScJsonEnum.ToEnum(jsonPlatform.platform, out RuntimePlatform platform);
                 if (!platformCastSucceeded)
@@ -116,7 +116,7 @@ namespace CCLBStudio.SmartConfig
                 }
             }
 
-            foreach (var jsonEntry in rc.entries)
+            foreach (var jsonEntry in sc.entries)
             {
                 #if UNITY_EDITOR
                 if (!string.IsNullOrEmpty(jsonEntry.category) && !allCategories.Contains(jsonEntry.category))

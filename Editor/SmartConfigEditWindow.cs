@@ -11,6 +11,10 @@ namespace CCLBStudio.SmartConfig
     public class SmartConfigEditWindow : EditorWindow
     {
         private SmartConfigService _smartConfigService;
+        private SmartConfigService[] _smartConfigServices;
+        private string[] _serviceNames;
+        private int _currentlySelectedServiceIndex;
+        private string _currentlySelectedServiceName;
         private SmartConfigEditWindowSettings _settings;
         [NonSerialized] private bool _init;
         
@@ -77,11 +81,12 @@ namespace CCLBStudio.SmartConfig
         private bool _appEntriesSectionUnfolded;
         private bool _categoriesSectionUnfolded;
         private bool _platformSectionUnfolded;
-        private const string SectionLangUnfolded = "rc_section_lang_unfolded";
-        private const string SectionAppEntriesUnfolded = "rc_section_data_unfolded";
-        private const string SectionCategoriesUnfolded = "rc_section_categories_unfolded";
-        private const string SectionPlatformUnfolded = "rc_section_platform_unfolded";
-        private const string LastOpenTab = "rc_last_tab_open";
+        private const string SectionLangUnfolded = "sc_section_lang_unfolded";
+        private const string SectionAppEntriesUnfolded = "sc_section_data_unfolded";
+        private const string SectionCategoriesUnfolded = "sc_section_categories_unfolded";
+        private const string SectionPlatformUnfolded = "sc_section_platform_unfolded";
+        private const string LastOpenTab = "sc_last_tab_open";
+        private const string SelectedServiceName = "sc_selected_service";
 
         public static void ShowWindow()
         {
@@ -93,7 +98,9 @@ namespace CCLBStudio.SmartConfig
 
         private void OnEnable()
         {
-            _smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
+            _smartConfigServices = ScEditorExtender.LoadScriptableAssets<SmartConfigService>();
+            _serviceNames = _smartConfigServices.Select(x => x.name).ToArray();
+            //_smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
             _editorData = ScEditorExtender.LoadScriptableAsset<SmartConfigEditorData>();
             _settings = ScEditorExtender.LoadScriptableAsset<SmartConfigEditWindowSettings>();
 
@@ -184,11 +191,49 @@ namespace CCLBStudio.SmartConfig
 
         #region Initialization
 
+        private void TrySelectCurrentService()
+        {
+            if (_smartConfigServices.Length <= 0)
+            {
+                return;
+            }
+
+            _currentlySelectedServiceName = EditorPrefs.GetString(SelectedServiceName, string.Empty);
+            var index = _smartConfigServices.ToList().FindIndex(x => x.name == _currentlySelectedServiceName);
+            if (index < 0)
+            {
+                Debug.Log($"No service found with name {_currentlySelectedServiceName}. Resetting...");
+                SelectService(0);
+                return;
+            }
+            
+            Debug.Log($"Last selected index could be found : {_smartConfigServices[index].name}");
+            SelectService(index);
+        }
+
+        private void SelectService(int index)
+        {
+            _smartConfigService = _smartConfigServices[index];
+            _currentlySelectedServiceIndex = index;
+            _currentlySelectedServiceName = _smartConfigService.name;
+            EditorPrefs.SetString(SelectedServiceName, _currentlySelectedServiceName);
+            
+            _editorData.NotifyNewServiceSelected(_smartConfigService);
+            LoadFromCurrentService();
+        }
+
         private bool CheckAssets()
         {
+            if (!_editorData)
+            {
+                CreateAndBindEditorDataSaver();
+                //return false;
+            }
+            
             if (!_smartConfigService)
             {
-                _smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
+                TrySelectCurrentService();
+                //_smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
                 EditorGUILayout.HelpBox("Unable to load the Smart Config Service !", MessageType.Error);
                 return false;
             }
@@ -200,16 +245,6 @@ namespace CCLBStudio.SmartConfig
                 return false;
             }
 
-            // if (!_editorData)
-            // {
-            //     EditorGUILayout.HelpBox("There is no editor data file. This file is required so save your changes. Click the button below to create one.", MessageType.Warning);
-            //     if (GUILayout.Button("Create New Editor File"))
-            //     {
-            //         CreateAndBindEditorDataSaver();
-            //     }
-            //     return false;
-            // }
-
             if (!_smartConfigService.LocalTranslationFile)
             {
                 EditorGUILayout.HelpBox("There is no local translation file. This file holds all the smart config data for the current version and is what will be uploaded on the server. Click the button below to create a empty one.", MessageType.Warning);
@@ -219,12 +254,6 @@ namespace CCLBStudio.SmartConfig
                 }
                 
                 return false;
-            }
-
-            if (!_editorData)
-            {
-                CreateAndBindEditorDataSaver();
-                //return false;
             }
 
             return true;
@@ -261,7 +290,6 @@ namespace CCLBStudio.SmartConfig
         private void CreatePlatformFoldoutStates()
         {
             _platformFoldouts = new Dictionary<RuntimePlatform, bool>(_editorData.platformEntries.Count);
-            //foreach (var platform in _editorData.platformEntries.GetKeys())
             foreach (var platform in _editorData.platformEntries.Select(x => x.Key))
             {
                 _platformFoldouts[platform] = false;
@@ -352,8 +380,9 @@ namespace CCLBStudio.SmartConfig
 
         private void DrawCommonHeader()
         {
+            DrawServiceSelection();
             GUILayout.BeginHorizontal();
-
+            
             GUILayout.FlexibleSpace();
             DrawSyncFromCloud();
             GUILayout.Space(_settings.spaceBetweenHeaderButtons);
@@ -361,12 +390,39 @@ namespace CCLBStudio.SmartConfig
             GUILayout.Space(_settings.spaceBetweenHeaderButtons);
             DrawSaveLocal();
             GUILayout.Space(_settings.spaceBetweenHeaderButtons);
-            DrawSyncFromJson();
+            DrawLocalSync();
             GUILayout.Space(_settings.spaceBetweenHeaderButtons);
             DrawUpload();
             GUILayout.FlexibleSpace();
             
             GUILayout.EndHorizontal();
+        }
+
+        private void DrawServiceSelection()
+        {
+            if (_smartConfigServices.Length <= 1)
+            {
+                return;
+            }
+            
+            Rect rect = new Rect(5, EditorGUIUtility.standardVerticalSpacing, 335f, _commonHeaderButtonStyle.fixedHeight + EditorGUIUtility.singleLineHeight);
+
+            rect.y += rect.height / 2f - EditorGUIUtility.standardVerticalSpacing * 2;
+            rect.height = EditorGUIUtility.singleLineHeight + EditorGUIUtility.standardVerticalSpacing * 4;
+            GUI.Box(rect, "", EditorStyles.helpBox);
+
+            rect.x += 5;
+            GUI.Label(rect, "Service :");
+            rect.y += EditorGUIUtility.standardVerticalSpacing * 2;
+            rect.x += 60f;
+            rect.width -= 75f; 
+            
+            EditorGUI.BeginChangeCheck();
+            _currentlySelectedServiceIndex = EditorGUI.Popup(rect, _currentlySelectedServiceIndex, _serviceNames);
+            if (EditorGUI.EndChangeCheck())
+            {
+                SelectService(_currentlySelectedServiceIndex);
+            }
         }
 
         private void DrawSyncFromCloud()
@@ -457,17 +513,22 @@ namespace CCLBStudio.SmartConfig
             GUILayout.EndVertical();
         }
 
-        private void DrawSyncFromJson()
+        private void DrawLocalSync()
         {
             GUILayout.BeginVertical();
             GUILayout.Label("Local Sync", _headerButtonsLabelStyle, GUILayout.Width(_settings.headerButtonWidth));
             if (GUILayout.Button(_syncFromJsonContent, _commonHeaderButtonStyle))
             {
-                var rc = new SmartConfigData(_smartConfigService.LocalTranslationFile.text);
-                _editorData.LoadFrom(rc);
-                RefreshDrawingData();
+                LoadFromCurrentService();
             }
             GUILayout.EndVertical();
+        }
+
+        private void LoadFromCurrentService()
+        {
+            var sc = new SmartConfigData(_smartConfigService.LocalTranslationFile.text);
+            _editorData.LoadFrom(sc);
+            RefreshDrawingData();
         }
 
         private void OnDownloadProgressed(float progress)
@@ -1412,7 +1473,7 @@ namespace CCLBStudio.SmartConfig
         {
             string servicePath = AssetDatabase.GetAssetPath(_smartConfigService);
             string directoryPath = Path.GetDirectoryName(servicePath) + "/Editor";
-            string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, "RC-EditorDataSaver.asset"));
+            string projectRelativePath = AssetDatabase.GenerateUniqueAssetPath(Path.Combine(directoryPath!, "SC-EditorDataSaver.asset"));
 
             var so = CreateInstance<SmartConfigEditorData>();
             AssetDatabase.CreateAsset(so, projectRelativePath);

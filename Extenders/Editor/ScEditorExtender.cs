@@ -58,5 +58,24 @@ namespace CCLBStudio.SmartConfig
 
             return result;
         }
+        
+        public static T[] LoadScriptableAssets<T>() where T : ScriptableObject
+        {
+            string[] assetPath = AssetDatabase.FindAssets($"t:{typeof(T).Name}");
+
+            if (assetPath.Length <= 0)
+            {
+                Debug.Log($"There is no asset of type {typeof(T).Name} in the project.");
+                return null;
+            }
+
+            var result = new T[assetPath.Length];
+            for (int i = 0; i < assetPath.Length; i++)
+            {
+                result[i] = (T)AssetDatabase.LoadAssetAtPath(AssetDatabase.GUIDToAssetPath(assetPath[i]), typeof(T));
+            }
+
+            return result;
+        }
     }
 }

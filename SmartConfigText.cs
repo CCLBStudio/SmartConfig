@@ -15,13 +15,13 @@ namespace CCLBStudio.SmartConfig
         {
             if (!service)
             {
-                Debug.LogError("Remote Config Service is null !");
+                Debug.LogError("Smart Config Service is null !");
                 Destroy(this);
                 return;
             }
         
             _tmPro = GetComponent<TextMeshProUGUI>();
-            ApplyRemoteConfigKey();
+            ApplySmartConfigKey();
             service.AddListener(this);
         }
 
@@ -30,7 +30,7 @@ namespace CCLBStudio.SmartConfig
             service.RemoveListener(this);
         }
 
-        private void ApplyRemoteConfigKey()
+        private void ApplySmartConfigKey()
         {
             if (!_tmPro || !service)
             {
@@ -62,13 +62,13 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        public void OnRemoteConfigLoaded()
+        public void OnConfigLoaded()
         {
         }
 
-        public void OnRemoteConfigLanguageSelected()
+        public void OnConfigLanguageSelected()
         {
-            ApplyRemoteConfigKey();
+            ApplySmartConfigKey();
         }
     }
 }

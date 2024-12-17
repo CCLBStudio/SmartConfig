@@ -8,7 +8,7 @@ using Unity.EditorCoroutines.Editor;
 
 namespace CCLBStudio.SmartConfig.Demo
 {
-    [CreateAssetMenu(fileName = "GoogleDriveTransferStrategy", menuName = "CCLB Studio/Remote Config/Transfer Strategies/Google Drive Strategy")]
+    [CreateAssetMenu(fileName = "GoogleDriveTransferStrategy", menuName = "CCLB Studio/Smart Config/Transfer Strategies/Google Drive Strategy")]
     public class GoogleDriveTransferStrategy : SmartConfigTransferStrategy
     {
         [SerializeField] private string fileId;

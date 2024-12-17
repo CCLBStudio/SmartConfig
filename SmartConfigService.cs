@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CCLBStudio.SmartConfig
 {
-    [CreateAssetMenu(fileName = "RemoteConfigService", menuName = "CCLB Studio/Remote Config/Service SO")]
+    [CreateAssetMenu(fileName = "SmartConfigService-SO", menuName = "CCLB Studio/Smart Config/Service SO")]
     public class SmartConfigService : ScriptableObject
     {
 #region Editor Properties
@@ -53,7 +53,7 @@ namespace CCLBStudio.SmartConfig
 
         public SystemLanguage CurrentLanguage => _currentlySelectedLanguage ?? defaultLanguage;
         public List<SystemLanguage> ExistingLanguages => existingLanguages;
-        public const string FileName = "RemoteConfig.json";
+        public const string FileName = "SmartConfig.json";
         public SmartConfigTransferStrategy TransferStrategy => transferStrategy;
 
         [Tooltip("If TRUE, the service with automatically initialize itself during the OnEnable event.")]
@@ -73,7 +73,7 @@ namespace CCLBStudio.SmartConfig
         [NonSerialized] private Dictionary<string, float> _runtimeFloatValues;
         [NonSerialized] private Dictionary<string, bool> _runtimeBoolValues;
         [NonSerialized] private Dictionary<string, string> _runtimeStringValues;
-        [NonSerialized] private SmartConfigData _runtimeRc;
+        [NonSerialized] private SmartConfigData _runtimeConfig;
         [NonSerialized] private SystemLanguage? _currentlySelectedLanguage;
         [NonSerialized] private SystemLanguage _currentlyTranslatedLanguage;
         [NonSerialized] private List<ISmartConfigListener> _listeners;
@@ -102,7 +102,7 @@ namespace CCLBStudio.SmartConfig
             _runtimeStringValues = new Dictionary<string, string>();
             _listeners = new List<ISmartConfigListener>();
 
-            _runtimeRc = null;
+            _runtimeConfig = null;
             _currentlySelectedLanguage = null;
             _currentlyTranslatedLanguage = SystemLanguage.Unknown;
 
@@ -156,18 +156,18 @@ namespace CCLBStudio.SmartConfig
 
         private void OnRemoteConfigFetched(string json)
         {
-            Debug.Log("--- REMOTE CONFIG --- Successfully downloaded the remote config file ! Loading...");
-            _runtimeRc = new SmartConfigData(json);
-            LoadFrom(_runtimeRc);
+            Debug.Log("--- SMART CONFIG --- Successfully downloaded the smart config file ! Loading...");
+            _runtimeConfig = new SmartConfigData(json);
+            LoadFrom(_runtimeConfig);
         }
 
         private bool OnRemoteConfigFetchFailed()
         {
-            Debug.LogError("--- REMOTE CONFIG --- Unable to download the remote config file. Checking for local file...");
+            Debug.LogError("--- SMART CONFIG --- Unable to download the smart config file. Checking for local file...");
             
             if (!localTranslationFile)
             {
-                Debug.LogError("--- REMOTE CONFIG --- No local translation file, unable to load local remote config !");
+                Debug.LogError("--- SMART CONFIG --- No local translation file, unable to load local smart config !");
                 return false;
             }
             
@@ -179,23 +179,23 @@ namespace CCLBStudio.SmartConfig
         {
             if (!localTranslationFile)
             {
-                Debug.LogError("--- REMOTE CONFIG --- No local translation file, unable to load local remote config !");
+                Debug.LogError("--- SMART CONFIG --- No local translation file, unable to load local smart config !");
                 return;
             }
             
-            _runtimeRc = new SmartConfigData(localTranslationFile.text);
-            LoadFrom(_runtimeRc);
+            _runtimeConfig = new SmartConfigData(localTranslationFile.text);
+            LoadFrom(_runtimeConfig);
         }
 
-        private void LoadPlatformSettings(SmartConfigData rc)
+        private void LoadPlatformSettings(SmartConfigData sc)
         {
-            if (!rc.platformEntries.ContainsKey(Application.platform))
+            if (!sc.platformEntries.ContainsKey(Application.platform))
             {
-                Debug.Log($"--- REMOTE CONFIG --- No platform settings form current platform {Application.platform} !");
+                Debug.Log($"--- SMART CONFIG --- No platform settings form current platform {Application.platform} !");
                 return;
             }
 
-            var platformSettings = rc.platformEntries[Application.platform];
+            var platformSettings = sc.platformEntries[Application.platform];
             foreach (var entry in platformSettings)
             {
                 switch (entry.type)
@@ -204,7 +204,7 @@ namespace CCLBStudio.SmartConfig
                         var intEntry = (SmartConfigIntEntry)entry;
                         if (!_runtimeIntValues.TryAdd(intEntry.key, intEntry.value))
                         {
-                            Debug.LogError($"--- REMOTE CONFIG --- int dictionary already contains the key {entry.key} !");
+                            Debug.LogError($"--- SMART CONFIG --- int dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
@@ -212,7 +212,7 @@ namespace CCLBStudio.SmartConfig
                         var floatEntry = (SmartConfigFloatEntry)entry;
                         if (!_runtimeFloatValues.TryAdd(floatEntry.key, floatEntry.value))
                         {
-                            Debug.LogError($"--- REMOTE CONFIG --- float dictionary already contains the key {entry.key} !");
+                            Debug.LogError($"--- SMART CONFIG --- float dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
@@ -220,7 +220,7 @@ namespace CCLBStudio.SmartConfig
                         var boolEntry = (SmartConfigBoolEntry)entry;
                         if (!_runtimeBoolValues.TryAdd(boolEntry.key, boolEntry.value))
                         {
-                            Debug.LogError($"--- REMOTE CONFIG --- bool dictionary already contains the key {entry.key} !");
+                            Debug.LogError($"--- SMART CONFIG --- bool dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
@@ -228,7 +228,7 @@ namespace CCLBStudio.SmartConfig
                         var stringEntry = (SmartConfigStringEntry)entry;
                         if (!_runtimeStringValues.TryAdd(stringEntry.key, stringEntry.value))
                         {
-                            Debug.LogError($"--- REMOTE CONFIG --- string dictionary already contains the key {entry.key} !");
+                            Debug.LogError($"--- SMART CONFIG --- string dictionary already contains the key {entry.key} !");
                         }
                         break;
                     
@@ -241,18 +241,18 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void LoadFrom(SmartConfigData rc)
+        private void LoadFrom(SmartConfigData sc)
         {
-            existingLanguages = rc.allLanguages;
+            existingLanguages = sc.allLanguages;
 
-            _runtimeIntValues = rc.intEntries.ToDictionary(x => x.Key, x => x.Value.value);
-            _runtimeBoolValues = rc.boolEntries.ToDictionary(x => x.Key, x => x.Value.value);
-            _runtimeStringValues = rc.stringEntries.ToDictionary(x => x.Key, x => x.Value.value);
-            _runtimeFloatValues = rc.floatEntries.ToDictionary(x => x.Key, x => x.Value.value);
+            _runtimeIntValues = sc.intEntries.ToDictionary(x => x.Key, x => x.Value.value);
+            _runtimeBoolValues = sc.boolEntries.ToDictionary(x => x.Key, x => x.Value.value);
+            _runtimeStringValues = sc.stringEntries.ToDictionary(x => x.Key, x => x.Value.value);
+            _runtimeFloatValues = sc.floatEntries.ToDictionary(x => x.Key, x => x.Value.value);
 
-            LoadPlatformSettings(rc);
+            LoadPlatformSettings(sc);
             SelectLanguage(_currentlySelectedLanguage ?? defaultLanguage);
-            NotifyRemoteConfigLoaded();
+            NotifyConfigLoaded();
         }
 
         #endregion
@@ -277,32 +277,32 @@ namespace CCLBStudio.SmartConfig
         {
             if (_currentlyTranslatedLanguage == lang)
             {
-                Debug.Log($"--- REMOTE CONFIG --- Language {lang.ToString()} is already the selected language.");
+                Debug.Log($"--- SMART CONFIG --- Language {lang.ToString()} is already the selected language.");
                 return;
             }
 
             _currentlySelectedLanguage = lang;
 
-            if (_runtimeRc == null)
+            if (_runtimeConfig == null)
             {
                 return;
             }
 
             SetTranslatableValuesForLanguage(lang);
-            NotifyRemoteConfigLanguageSelected();
+            NotifyConfigLanguageSelected();
         }
 
         private void SetTranslatableValuesForLanguage(SystemLanguage lang)
         {
-            foreach (var key in _runtimeRc.translatableEntries.Keys)
+            foreach (var key in _runtimeConfig.translatableEntries.Keys)
             {
-                if (!_runtimeRc.translatableEntries[key].value.ContainsKey(lang))
+                if (!_runtimeConfig.translatableEntries[key].value.ContainsKey(lang))
                 {
-                    Debug.LogError($"--- REMOTE CONFIG --- Missing language {lang.ToString()} for entry {key} !");
+                    Debug.LogError($"--- SMART CONFIG --- Missing language {lang.ToString()} for entry {key} !");
                     continue;
                 }
 
-                _runtimeStringValues[key] = _runtimeRc.translatableEntries[key].value[lang];
+                _runtimeStringValues[key] = _runtimeConfig.translatableEntries[key].value[lang];
             }
 
             _currentlyTranslatedLanguage = lang;
@@ -316,7 +316,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeBoolValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the boolean dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the boolean dictionary !");
                 value = false;
                 return false;
             }
@@ -333,7 +333,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeFloatValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the float dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the float dictionary !");
                 value = -1f;
                 return false;
             }
@@ -350,7 +350,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeStringValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the string dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the string dictionary !");
                 value = string.Empty;
                 return false;
             }
@@ -367,7 +367,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeIntValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- REMOTE CONFIG --- Key {key} is not present in the int dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the int dictionary !");
                 value = -1;
                 return false;
             }
@@ -401,19 +401,19 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
-        private void NotifyRemoteConfigLoaded()
+        private void NotifyConfigLoaded()
         {
             foreach (var l in _listeners)
             {
-                l.OnRemoteConfigLoaded();
+                l.OnConfigLoaded();
             }
         }
 
-        private void NotifyRemoteConfigLanguageSelected()
+        private void NotifyConfigLanguageSelected()
         {
             foreach (var l in _listeners)
             {
-                l.OnRemoteConfigLanguageSelected();
+                l.OnConfigLanguageSelected();
             }
         }
 

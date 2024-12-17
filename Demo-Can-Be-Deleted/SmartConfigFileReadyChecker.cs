@@ -12,12 +12,12 @@ namespace CCLBStudio.SmartConfig.Demo
             service.AddListener(this);
         }
 
-        public void OnRemoteConfigLoaded()
+        public void OnConfigLoaded()
         {
             GetComponent<TextMeshProUGUI>().text = "Config file ready : true !";
         }
 
-        public void OnRemoteConfigLanguageSelected()
+        public void OnConfigLanguageSelected()
         {
         }
     }

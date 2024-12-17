@@ -16,7 +16,8 @@ namespace CCLBStudio.SmartConfig
         public List<SmartConfigKeyValuePair<string, string>> allCategories = new ();
         public List<SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>> platformEntries= new ();
         public List<SmartConfigEditorEntry> allAppEntries= new ();
-        
+        [SerializeField] private SmartConfigService currentlySelectedService;
+
         [NonSerialized] private Dictionary<string, SmartConfigEditorEntry> _allValidAppEntries;
         [NonSerialized] private Dictionary<RuntimePlatform, Dictionary<string, SmartConfigEditorEntry>> _allValidPlatformEntries;
 
@@ -28,6 +29,7 @@ namespace CCLBStudio.SmartConfig
         [NonSerialized] private List<SmartConfigEditorEntry> _appStringEntries;
         [NonSerialized] private List<SmartConfigEditorEntry> _appTranslatableEntries;
         [NonSerialized] private Dictionary<SmartConfigEditorEntry, int> _appEntriesIndexes;
+
 
         #region Initialization Methods
 
@@ -46,14 +48,14 @@ namespace CCLBStudio.SmartConfig
             BuildAll();
         }
 
-        public void LoadFrom(SmartConfigData rc)
+        public void LoadFrom(SmartConfigData sc)
         {
-            allLanguages = new List<SmartConfigEditorLanguage>(rc.allLanguages.Count);
+            allLanguages = new List<SmartConfigEditorLanguage>(sc.allLanguages.Count);
             platformEntries = new List<SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>>();
-            allAppEntries = new List<SmartConfigEditorEntry>(rc.allEntries.Count);
+            allAppEntries = new List<SmartConfigEditorEntry>(sc.allEntries.Count);
             
-            allCategories.RemoveAll(x => !rc.allCategories.Contains(x.Key));
-            foreach (var category in rc.allCategories)
+            allCategories.RemoveAll(x => !sc.allCategories.Contains(x.Key));
+            foreach (var category in sc.allCategories)
             {
                 int index = allCategories.FindIndex(x => x.Key == category);
                 if (index < 0)
@@ -62,7 +64,7 @@ namespace CCLBStudio.SmartConfig
                 }
             }
 
-            foreach (var lang in rc.allLanguages)
+            foreach (var lang in sc.allLanguages)
             {
                 allLanguages.Add(new SmartConfigEditorLanguage
                 {
@@ -73,7 +75,7 @@ namespace CCLBStudio.SmartConfig
                 });
             }
 
-            foreach (var platformEntry in rc.platformEntries)
+            foreach (var platformEntry in sc.platformEntries)
             {
                 List<SmartConfigEditorEntry> editorEntries = new List<SmartConfigEditorEntry>(platformEntry.Value.Count);
                 foreach (var entry in platformEntry.Value)
@@ -85,7 +87,7 @@ namespace CCLBStudio.SmartConfig
                 platformEntries.Add(new SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>(platformEntry.Key, editorEntries));
             }
             
-            foreach (var entry in rc.allEntries)
+            foreach (var entry in sc.allEntries)
             {
                 var editorEntry = new SmartConfigEditorEntry(entry, this);
                 allAppEntries.Add(editorEntry);
@@ -93,7 +95,7 @@ namespace CCLBStudio.SmartConfig
 
             allAppEntries.TrimExcess();
             BuildAll();
-            SetDirty();
+            WriteOnDisk();
         }
 
         private void BuildAll()
@@ -108,13 +110,22 @@ namespace CCLBStudio.SmartConfig
 
         #endregion
 
+        #region Service Selection Methods
+
+        public void NotifyNewServiceSelected(SmartConfigService service)
+        {
+            currentlySelectedService = service;
+        }
+
+        #endregion
+
         #region Json Write Methods
 
         public void WriteJson()
         {
-            var service = GetRcService();
-            if (!service)
+            if (!currentlySelectedService)
             {
+                EditorUtility.DisplayDialog("Current Service Is Null !", "No current service selected. This is not supposed to happen. You can manually fill the \"Current Service\" field of this object or close and reopen the editor window.", "Ok");
                 return;
             }
 
@@ -155,7 +166,7 @@ namespace CCLBStudio.SmartConfig
             }
 
             string json = JsonUtility.ToJson(jsonData, true);
-            string absolutePath = GetJsonFileAbsolutePath(service.LocalTranslationFile);
+            string absolutePath = GetJsonFileAbsolutePath(currentlySelectedService.LocalTranslationFile);
             File.WriteAllText(absolutePath, json);
             
             WriteOnDisk();
@@ -168,34 +179,36 @@ namespace CCLBStudio.SmartConfig
 
         public void UploadJson(Action onUploadSucceeded, Action<float> onProgress, Action onUploadFailed)
         {
-            var rcService = GetRcService();
-            if (!rcService)
+            if (!currentlySelectedService)
             {
-                Debug.LogError("Smart config service is null !");
+                EditorUtility.DisplayDialog("Current Service Is Null !", "No current service selected. This is not supposed to happen. You can manually fill the \"Current Service\" field of the SmartConfigEditorData object or close and reopen the editor window.", "Ok");
+                Debug.LogError("Current service is null.");
+                onUploadFailed?.Invoke();
                 return;
             }
 
-            rcService.TransferStrategy.UploadJson(rcService.LocalTranslationFile.text, onProgress, onUploadSucceeded, onUploadFailed);
+            currentlySelectedService.TransferStrategy.UploadJson(currentlySelectedService.LocalTranslationFile.text, onProgress, onUploadSucceeded, onUploadFailed);
         }
 
         public void DownloadJson(Action onDataRefreshed, Action<float> onProgress, Action onDownloadFailed)
         {
-            var rcService = GetRcService();
-            if (!rcService)
+            if (!currentlySelectedService)
             {
-                Debug.LogError("Smart config service is null !");
+                EditorUtility.DisplayDialog("Current Service Is Null !", "No current service selected. This is not supposed to happen. You can manually fill the \"Current Service\" field of the SmartConfigEditorData object or close and reopen the editor window.", "Ok");
+                Debug.LogError("Current service is null.");
+                onDownloadFailed?.Invoke();
                 return;
             }
-            
-            rcService.TransferStrategy.DownloadJson(onProgress
+
+            currentlySelectedService.TransferStrategy.DownloadJson(onProgress
                 , json => { OnSmartJsonFetched(json, onDataRefreshed); }
                 , () => OnSmartJsonDownloadFailed(onDownloadFailed));
         }
 
         private void OnSmartJsonFetched(string json, Action onDataRefreshed)
         {
-            var rc = new SmartConfigData(json);
-            LoadFrom(rc);
+            var sc = new SmartConfigData(json);
+            LoadFrom(sc);
             WriteJson();
             onDataRefreshed?.Invoke();
         }
@@ -770,18 +783,6 @@ namespace CCLBStudio.SmartConfig
         {
             SetDirty();
             AssetDatabase.SaveAssetIfDirty(this);
-        }
-
-        private SmartConfigService GetRcService()
-        {
-            var service = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
-            if (!service || !service.LocalTranslationFile)
-            {
-                Debug.LogError("Problem with smart config service ! Unable to write the json file.");
-                return null;
-            }
-
-            return service;
         }
 
         private string GetJsonFileAbsolutePath(Object localFileAsset)
