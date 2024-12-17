@@ -182,6 +182,40 @@ MonoBehaviour:
       value: Hello world !
     editorData: {fileID: 11400000}
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  - key: my_awesome_key_2
+    type: 0
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 15
+    boolValue: 0
+    stringValue: 
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: 
+    - key: 10
+      value: 
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
+  - key: my_awesome_key_3
+    type: 2
+    category: 
+    categoryIndex: 0
+    respectCategoryPrefix: 1
+    isValid: 1
+    intValue: 0
+    boolValue: 0
+    stringValue: 
+    floatValue: 0
+    translatableValue:
+    - key: 14
+      value: 
+    - key: 10
+      value: 
+    editorData: {fileID: 11400000}
+    editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   - key: my_awesome_key_4
     type: 3
     category: 
@@ -199,4 +233,4 @@ MonoBehaviour:
       value: 
     editorData: {fileID: 11400000}
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
-  currentlySelectedService: {fileID: 11400000, guid: f5aab1eef25a35043a2d2f301659b686, type: 2}
+  currentlySelectedService: {fileID: 11400000, guid: ec2cf898c4320994aad195ca0cf2e607, type: 2}

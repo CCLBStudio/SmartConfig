@@ -12,19 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e2fc3472e1375724ca22d8c793a9e9d2, type: 3}
   m_Name: SmartConfigService-SO
   m_EditorClassIdentifier: 
-  keyUses:
-  - key: my_awesome_key_1
-    value: 100
-  - key: my_awesome_key_4
-    value: 14
-  - key: my_awesome_key_5
-    value: 6
-  - key: my_awesome_key_6
-    value: 4
-  - key: my_awesome_key_2
-    value: 1
-  - key: my_awesome_key_3
-    value: 2
+  keyUses: []
   autoInitialize: 1
   onInitialized: 0
   transferStrategy: {fileID: 11400000, guid: 8eed11f41db556a4bb7dbc729c8652d6, type: 2}
