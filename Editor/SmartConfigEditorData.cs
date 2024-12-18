@@ -261,6 +261,25 @@ namespace CCLBStudio.SmartConfig
             SetDirty();
         }
 
+        public void NotifyMultipleEntriesCategoryChanged(List<SmartConfigEditorEntry> editorEntries, int index)
+        {
+            foreach (var editorEntry in editorEntries)
+            {
+                if (index <= 0)
+                {
+                    ResetEntryCategory(editorEntry);
+                }
+                else
+                {
+                    editorEntry.categoryIndex = index;
+                    editorEntry.category = allCategories[index - 1].Key;
+                }
+            }
+            
+            BuildAndCheckCategoryEntries();
+            SetDirty();
+        }
+
         public void NotifyCategoryPrefixChanged(int index)
         {
             if (_categoryEntries == null)

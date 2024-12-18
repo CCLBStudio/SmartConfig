@@ -62,28 +62,28 @@
     ],
     "entries": [
         {
-            "key": "my_awesome_key_1",
+            "key": "test_my_awesome_key_1",
             "type": "Translatable",
             "value": "{\"translations\":[{\"language\":\"French\",\"content\":\"Bonjour le monde !\"},{\"language\":\"English\",\"content\":\"Hello world !\"}]}",
-            "category": ""
+            "category": "Test"
         },
         {
-            "key": "my_awesome_key_2",
+            "key": "test_my_awesome_key_2",
             "type": "Int",
             "value": "15",
-            "category": ""
+            "category": "Test"
         },
         {
-            "key": "my_awesome_key_3",
+            "key": "test_my_awesome_key_3",
             "type": "Bool",
             "value": "False",
-            "category": ""
+            "category": "Test"
         },
         {
-            "key": "my_awesome_key_4",
+            "key": "test_my_awesome_key_4",
             "type": "String",
             "value": "Epic text for epic dev !",
-            "category": ""
+            "category": "Test"
         }
     ]
 }

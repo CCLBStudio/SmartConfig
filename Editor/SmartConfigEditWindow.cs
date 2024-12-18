@@ -885,7 +885,7 @@ namespace CCLBStudio.SmartConfig
             float labelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.labelWidth = 60;
             EditorGUI.indentLevel++;
-            
+
             for(int i = 0; i < _editorData.allCategories.Count; i++)
             {
                 var pair = _editorData.allCategories[i];
@@ -897,14 +897,32 @@ namespace CCLBStudio.SmartConfig
                     DeleteCategory(i);
                 }
                 
-                EditorGUILayout.LabelField(pair.Key + " :", EditorStyles.boldLabel, GUILayout.Width(130));
+                EditorGUILayout.LabelField(pair.Key + " :", EditorStyles.boldLabel, GUILayout.Width(_settings.categoryNameWidth));
                 GUILayout.Space(_settings.spacingBetweenElements);
                 
                 EditorGUI.BeginChangeCheck();
-                pair.Value = EditorGUILayout.TextField("Prefix", pair.Value, GUILayout.Width(250));
+                pair.Value = EditorGUILayout.TextField("Prefix", pair.Value, GUILayout.Width(_settings.categoryPrefixWidth));
                 if (EditorGUI.EndChangeCheck())
                 {
                     _editorData.NotifyCategoryPrefixChanged(i);
+                }
+                GUILayout.Space(_settings.spacingBetweenElements);
+
+                if (GUILayout.Button("Assign To All Visible Entries", GUILayout.Width(_settings.categoryAddToVisibleButtonWidth)))
+                {
+                    _editorData.NotifyMultipleEntriesCategoryChanged(_entriesToDraw, i + 1);
+                    RefreshDrawingData();
+                }
+                GUILayout.Space(_settings.spacingBetweenElements);
+                
+                if (GUILayout.Button("Fix All Visible Entries", GUILayout.Width(_settings.categoryFixAllButtonWidth)))
+                {
+                    foreach (var editorEntry in _entriesToDraw.Where(x => x.category == pair.Key && !x.respectCategoryPrefix))
+                    {
+                        string oldKey = editorEntry.key;
+                        editorEntry.key = $"{pair.Value}{editorEntry.key}";
+                        _editorData.NotifyAppEntryKeyChanged(oldKey, editorEntry);
+                    }
                 }
                 
                 GUILayout.EndHorizontal();

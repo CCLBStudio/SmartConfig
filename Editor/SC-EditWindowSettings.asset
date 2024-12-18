@@ -19,7 +19,8 @@ MonoBehaviour:
   foldoutBackgroundColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   headerButtonWidth: 85
   headerButtonHeight: 50
-  syncFromCloudTexture: {fileID: 2800000, guid: 4c0505830efb0f64ea357fcd0143319a, type: 3}
+  syncFromCloudTexture: {fileID: 2800000, guid: 4c0505830efb0f64ea357fcd0143319a,
+    type: 3}
   saveToJsonTexture: {fileID: 2800000, guid: f461e74883d88d541a10c79fa0aa65f8, type: 3}
   uploadTexture: {fileID: 2800000, guid: 022f6f70523ea5444b8272808d7f2c43, type: 3}
   saveLocalTexture: {fileID: 2800000, guid: 08a850af42a146946b144455d188a7f2, type: 3}
@@ -33,6 +34,10 @@ MonoBehaviour:
     json.
   syncFromJsonTooltip: Refresh the current data with the local Json file.
   spaceBetweenHeaderButtons: 15
+  categoryNameWidth: 180
+  categoryPrefixWidth: 250
+  categoryAddToVisibleButtonWidth: 200
+  categoryFixAllButtonWidth: 150
   deleteBtnTexture: {fileID: 2800000, guid: 46d8b0ef1eab9e14faac68a64149d3aa, type: 3}
   keyWidth: 300
   typeWidth: 150

@@ -29,6 +29,12 @@ namespace CCLBStudio.SmartConfig
         public string saveLocalTooltip = "Save the current data locally, but does NOT overwrite the local json.";
         public string syncFromJsonTooltip = "Refresh the current data with the local Json file.";
         public float spaceBetweenHeaderButtons = 15f;
+
+        [Header("Category Settings")]
+        [Min(50f)] public float categoryNameWidth = 150f;
+        [Min(50f)] public float categoryPrefixWidth = 250f;
+        [Min(180f)] public float categoryAddToVisibleButtonWidth = 200f;
+        [Min(130f)] public float categoryFixAllButtonWidth = 150f;
         
         [Header("App Entries Settings")]
         public Texture deleteBtnTexture;
