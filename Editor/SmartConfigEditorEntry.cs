@@ -46,7 +46,7 @@ namespace CCLBStudio.SmartConfig
             editSettings = editorData.settings;
             key = entry.key;
             type = entry.type;
-            category = entry.category;
+            category = string.IsNullOrEmpty(entry.category) ? "Default" : entry.category;
 
             switch (type)
             {

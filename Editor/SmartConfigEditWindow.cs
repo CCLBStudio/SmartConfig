@@ -20,7 +20,8 @@ namespace CCLBStudio.SmartConfig
         
         private SmartConfigValueTypeFilter _typeFilter = SmartConfigValueTypeFilter.None;
         private string[] _sortingCategories;
-        private int _currentCategoryFilter;
+        private string[] _categories;
+        private int _currentCategoryFilterIndex;
         private bool _isEditingNewCategory;
         private bool _clickedNewCategoryThisFrame;
         private string _newCategoryName;
@@ -100,7 +101,6 @@ namespace CCLBStudio.SmartConfig
         {
             _smartConfigServices = ScEditorExtender.LoadScriptableAssets<SmartConfigService>();
             _serviceNames = _smartConfigServices.Select(x => x.name).ToArray();
-            //_smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
             _editorData = ScEditorExtender.LoadScriptableAsset<SmartConfigEditorData>();
             _settings = ScEditorExtender.LoadScriptableAsset<SmartConfigEditWindowSettings>();
 
@@ -259,13 +259,16 @@ namespace CCLBStudio.SmartConfig
             return true;
         }
 
-        private void SetupSortingCategories()
+        private void SetupCategories()
         {
             _sortingCategories = new string[_editorData.allCategories.Count + 1];
-            _sortingCategories[0] = "None";
+            _categories = new string[_editorData.allCategories.Count];
+            _sortingCategories[0] = "All Categories";
+
             for (int i = 0; i < _editorData.allCategories.Count; i++)
             {
                 _sortingCategories[i + 1] = _editorData.allCategories[i].Key;
+                _categories[i] = _editorData.allCategories[i].Key;
             }
         }
 
@@ -274,7 +277,7 @@ namespace CCLBStudio.SmartConfig
             _editorData.Initialize();
             CreatePlatformFoldoutStates();
             RefreshDrawingData();
-            SetupSortingCategories();
+            SetupCategories();
             _init = true;
         }
 
@@ -937,9 +940,9 @@ namespace CCLBStudio.SmartConfig
         private void DeleteCategory(int index)
         {
             _editorData.NotifyCategoryDeleted(index);
-            _currentCategoryFilter = Mathf.Max(0, _currentCategoryFilter - 1);
+            _currentCategoryFilterIndex = Mathf.Max(0, _currentCategoryFilterIndex - 1);
             RefreshDrawingData();
-            SetupSortingCategories();
+            SetupCategories();
         }
         
         private void DrawNewCategoryArea()
@@ -972,7 +975,7 @@ namespace CCLBStudio.SmartConfig
                 string newCategoryName = ObjectNames.NicifyVariableName(_newCategoryName.Trim());
                 if (!string.IsNullOrEmpty(newCategoryName) && _editorData.TryAddNewCategory(newCategoryName))
                 {
-                    SetupSortingCategories();
+                    SetupCategories();
                 }
 
                 _isEditingNewCategory = false;
@@ -1097,9 +1100,10 @@ namespace CCLBStudio.SmartConfig
         private void RefreshDrawingList()
         {
             _entriesToDraw = _editorData.GetAppEntriesForFilter(_typeFilter);
-            if (_currentCategoryFilter > 0)
+            if (_currentCategoryFilterIndex > 0)
             {
-                _entriesToDraw = _entriesToDraw.FindAll(x => x.categoryIndex == _currentCategoryFilter);
+                //_entriesToDraw = _entriesToDraw.FindAll(x => x.categoryIndex == _currentCategoryFilterIndex);
+                _entriesToDraw = _entriesToDraw.FindAll(x => x.categoryIndex == _currentCategoryFilterIndex - 1);
             }
 
             if (!string.IsNullOrEmpty(_searchFilter))
@@ -1194,7 +1198,7 @@ namespace CCLBStudio.SmartConfig
             }
             
             EditorGUI.BeginChangeCheck();
-            _currentCategoryFilter = EditorGUILayout.Popup("Category", _currentCategoryFilter, _sortingCategories, GUILayout.Width(_settings.typeWidth + EditorGUIUtility.labelWidth));
+            _currentCategoryFilterIndex = EditorGUILayout.Popup("Category", _currentCategoryFilterIndex, _sortingCategories, GUILayout.Width(_settings.categoryWidth));
             if (EditorGUI.EndChangeCheck())
             {
                 RefreshDrawingData();
@@ -1392,7 +1396,8 @@ namespace CCLBStudio.SmartConfig
             if (shouldDraw)
             {
                 EditorGUI.BeginChangeCheck();
-                int index = EditorGUI.Popup(rect, editorEntry.categoryIndex, _sortingCategories);
+                //int index = EditorGUI.Popup(rect, editorEntry.categoryIndex, _sortingCategories);
+                int index = EditorGUI.Popup(rect, editorEntry.categoryIndex, _categories);
                 if (EditorGUI.EndChangeCheck())
                 {
                     _editorData.NotifyEntryCategoryChanged(editorEntry, index);

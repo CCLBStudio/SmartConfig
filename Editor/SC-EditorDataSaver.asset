@@ -22,13 +22,17 @@ MonoBehaviour:
     twoLettersIsoDisplay: EN
     languageName: English
     flag: {fileID: 2800000, guid: c4122cc3c5850dd45b66a68413e94497, type: 3}
-  allCategories: []
+  allCategories:
+  - key: Default
+    value: 
+  - key: Codex
+    value: 
   platformEntries:
   - key: 11
     value:
     - key: app_prod_versions
       type: 3
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -45,7 +49,7 @@ MonoBehaviour:
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_review_versions
       type: 3
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -62,7 +66,7 @@ MonoBehaviour:
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_maintenance_mode_enabled
       type: 2
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -79,7 +83,7 @@ MonoBehaviour:
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_update_url
       type: 3
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -98,7 +102,7 @@ MonoBehaviour:
     value:
     - key: app_prod_versions
       type: 3
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -115,7 +119,7 @@ MonoBehaviour:
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_review_versions
       type: 3
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -132,7 +136,7 @@ MonoBehaviour:
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_maintenance_mode_enabled
       type: 2
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -149,7 +153,7 @@ MonoBehaviour:
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
     - key: app_update_url
       type: 3
-      category: 
+      category: Default
       categoryIndex: 0
       respectCategoryPrefix: 1
       isValid: 1
@@ -167,7 +171,7 @@ MonoBehaviour:
   allAppEntries:
   - key: my_awesome_key_1
     type: 4
-    category: 
+    category: Default
     categoryIndex: 0
     respectCategoryPrefix: 1
     isValid: 1
@@ -184,8 +188,8 @@ MonoBehaviour:
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   - key: test_my_awesome_key_2
     type: 0
-    category: 
-    categoryIndex: 0
+    category: Codex
+    categoryIndex: 1
     respectCategoryPrefix: 1
     isValid: 1
     intValue: 15
@@ -201,7 +205,7 @@ MonoBehaviour:
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   - key: test_my_awesome_key_3
     type: 2
-    category: 
+    category: Default
     categoryIndex: 0
     respectCategoryPrefix: 1
     isValid: 1
@@ -218,7 +222,7 @@ MonoBehaviour:
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   - key: test_my_awesome_key_4
     type: 3
-    category: 
+    category: Default
     categoryIndex: 0
     respectCategoryPrefix: 1
     isValid: 1

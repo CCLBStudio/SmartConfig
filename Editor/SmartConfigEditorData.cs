@@ -13,7 +13,7 @@ namespace CCLBStudio.SmartConfig
     {
         public SmartConfigEditWindowSettings settings;
         public List<SmartConfigEditorLanguage> allLanguages= new ();
-        public List<SmartConfigKeyValuePair<string, string>> allCategories = new ();
+        public List<SmartConfigKeyValuePair<string, string>> allCategories = new () {new SmartConfigKeyValuePair<string, string>("Default", string.Empty)};
         public List<SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>> platformEntries= new ();
         public List<SmartConfigEditorEntry> allAppEntries= new ();
         [SerializeField] private SmartConfigService currentlySelectedService;
@@ -30,7 +30,6 @@ namespace CCLBStudio.SmartConfig
         [NonSerialized] private List<SmartConfigEditorEntry> _appStringEntries;
         [NonSerialized] private List<SmartConfigEditorEntry> _appTranslatableEntries;
         [NonSerialized] private Dictionary<SmartConfigEditorEntry, int> _appEntriesIndexes;
-
 
         #region Initialization Methods
 
@@ -54,8 +53,14 @@ namespace CCLBStudio.SmartConfig
             allLanguages = new List<SmartConfigEditorLanguage>(sc.allLanguages.Count);
             platformEntries = new List<SmartConfigKeyValuePair<RuntimePlatform, List<SmartConfigEditorEntry>>>();
             allAppEntries = new List<SmartConfigEditorEntry>(sc.allEntries.Count);
+
+            int defaultCategoryIndex = allCategories.FindIndex(x => x.Key == "Default");
+            if (defaultCategoryIndex < 0)
+            {
+                allCategories.Add(new SmartConfigKeyValuePair<string, string>("Default", string.Empty));
+            }
             
-            allCategories.RemoveAll(x => !sc.allCategories.Contains(x.Key));
+            allCategories.RemoveAll(x => x.Key != "Default" && !sc.allCategories.Contains(x.Key));
             foreach (var category in sc.allCategories)
             {
                 int index = allCategories.FindIndex(x => x.Key == category);
@@ -91,6 +96,11 @@ namespace CCLBStudio.SmartConfig
             foreach (var entry in sc.allEntries)
             {
                 var editorEntry = new SmartConfigEditorEntry(entry, this);
+                // if (string.IsNullOrEmpty(editorEntry.category))
+                // {
+                //     editorEntry.category = "Default";
+                // }
+                
                 allAppEntries.Add(editorEntry);
             }
 
@@ -257,7 +267,7 @@ namespace CCLBStudio.SmartConfig
             }
             
             editorEntry.categoryIndex = index;
-            editorEntry.category = allCategories[index - 1].Key;
+            editorEntry.category = allCategories[index].Key;
 
             BuildAndCheckCategoryEntries();
             SetDirty();
@@ -274,7 +284,7 @@ namespace CCLBStudio.SmartConfig
                 else
                 {
                     editorEntry.categoryIndex = index;
-                    editorEntry.category = allCategories[index - 1].Key;
+                    editorEntry.category = allCategories[index].Key;
                 }
             }
             
@@ -301,6 +311,12 @@ namespace CCLBStudio.SmartConfig
         
         public void NotifyCategoryDeleted(int index)
         {
+            if (allCategories[index].Key == "Default")
+            {
+                EditorUtility.DisplayDialog("Default category cannot be deleted !", "You are not allowed to deleted the default category. Please select another category to delete.", "Ok");
+                return;
+            }
+            
             if (_categoryEntries == null)
             {
                 BuildAndCheckCategoryEntries();
@@ -323,7 +339,7 @@ namespace CCLBStudio.SmartConfig
                 int newIndex = allCategories.FindIndex(x => x.Key == categoryEntriesPair.Key);
                 foreach (var editorEntry in categoryEntriesPair.Value)
                 {
-                    editorEntry.categoryIndex = newIndex + 1;
+                    editorEntry.categoryIndex = newIndex;
                 }
             }
             
@@ -338,23 +354,23 @@ namespace CCLBStudio.SmartConfig
                 return;
             }
 
-            if (allCategories[editorEntry.categoryIndex - 1].Key != editorEntry.category)
+            //if (allCategories[editorEntry.categoryIndex - 1].Key != editorEntry.category)
+            if (allCategories[editorEntry.categoryIndex].Key != editorEntry.category)
             {
                 Debug.LogError($"Problem with category for entry {editorEntry.key}. The entry category do not match the relative category at provided index. Resetting entry category...");
                 ResetEntryCategory(editorEntry);
                 return;
             }
 
-            editorEntry.respectCategoryPrefix = !string.IsNullOrEmpty(allCategories[editorEntry.categoryIndex - 1].Value) && editorEntry.key.StartsWith(allCategories[editorEntry.categoryIndex - 1].Value);
+            editorEntry.respectCategoryPrefix = string.IsNullOrEmpty(allCategories[editorEntry.categoryIndex].Value) || editorEntry.key.StartsWith(allCategories[editorEntry.categoryIndex].Value);
         }
         
         private void BuildAndCheckCategoryEntries()
         {
             _categoryEntries = new Dictionary<string, List<SmartConfigEditorEntry>>(allCategories.Count);
-            var allEntriesWithCategory = allAppEntries.Where(x => !string.IsNullOrEmpty(x.category));
             Dictionary<string, int> categoryIndexes = new Dictionary<string, int>();
 
-            foreach (var editorEntry in allEntriesWithCategory)
+            foreach (var editorEntry in allAppEntries)
             {
                 if (!_categoryEntries.ContainsKey(editorEntry.category))
                 {
@@ -363,7 +379,7 @@ namespace CCLBStudio.SmartConfig
                 
                 _categoryEntries[editorEntry.category].Add(editorEntry);
                 categoryIndexes.TryAdd(editorEntry.category, Mathf.Max(0, allCategories.FindIndex(x => x.Key == editorEntry.category)));
-                editorEntry.categoryIndex = categoryIndexes[editorEntry.category] + 1;
+                editorEntry.categoryIndex = categoryIndexes[editorEntry.category];
                 
                 CheckEntryCategoryPrefix(editorEntry);
             }
@@ -371,9 +387,10 @@ namespace CCLBStudio.SmartConfig
 
         private void ResetEntryCategory(SmartConfigEditorEntry editorEntry)
         {
-            editorEntry.categoryIndex = 0;
-            editorEntry.category = string.Empty;
-            editorEntry.respectCategoryPrefix = true;
+            int index = allCategories.FindIndex(x => x.Key == "Default");
+            editorEntry.categoryIndex = index;
+            editorEntry.category = "Default";
+            editorEntry.respectCategoryPrefix = string.IsNullOrEmpty(allCategories[editorEntry.categoryIndex].Value) || editorEntry.key.StartsWith(allCategories[editorEntry.categoryIndex].Value);
         }
 
         #endregion

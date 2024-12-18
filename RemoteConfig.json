@@ -8,25 +8,25 @@
                     "key": "app_prod_versions",
                     "type": "String",
                     "value": "0.1.0",
-                    "category": ""
+                    "category": "Default"
                 },
                 {
                     "key": "app_review_versions",
                     "type": "String",
                     "value": "0.0.0",
-                    "category": ""
+                    "category": "Default"
                 },
                 {
                     "key": "app_maintenance_mode_enabled",
                     "type": "Bool",
                     "value": "False",
-                    "category": ""
+                    "category": "Default"
                 },
                 {
                     "key": "app_update_url",
                     "type": "String",
                     "value": "",
-                    "category": ""
+                    "category": "Default"
                 }
             ]
         },
@@ -37,25 +37,25 @@
                     "key": "app_prod_versions",
                     "type": "String",
                     "value": "0.1.0",
-                    "category": ""
+                    "category": "Default"
                 },
                 {
                     "key": "app_review_versions",
                     "type": "String",
                     "value": "0.0.0",
-                    "category": ""
+                    "category": "Default"
                 },
                 {
                     "key": "app_maintenance_mode_enabled",
                     "type": "Bool",
                     "value": "False",
-                    "category": ""
+                    "category": "Default"
                 },
                 {
                     "key": "app_update_url",
                     "type": "String",
                     "value": "",
-                    "category": ""
+                    "category": "Default"
                 }
             ]
         }
@@ -65,25 +65,25 @@
             "key": "my_awesome_key_1",
             "type": "Translatable",
             "value": "{\"translations\":[{\"language\":\"French\",\"content\":\"Bonjour le monde !\"},{\"language\":\"English\",\"content\":\"Hello world !\"}]}",
-            "category": ""
+            "category": "Default"
         },
         {
             "key": "test_my_awesome_key_2",
             "type": "Int",
             "value": "15",
-            "category": ""
+            "category": "Codex"
         },
         {
             "key": "test_my_awesome_key_3",
             "type": "Bool",
             "value": "False",
-            "category": ""
+            "category": "Default"
         },
         {
             "key": "test_my_awesome_key_4",
             "type": "String",
             "value": "Epic text for epic dev !",
-            "category": ""
+            "category": "Default"
         }
     ]
 }
