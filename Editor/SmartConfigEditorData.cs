@@ -19,6 +19,7 @@ namespace CCLBStudio.SmartConfig
         [SerializeField] private SmartConfigService currentlySelectedService;
 
         [NonSerialized] private Dictionary<string, SmartConfigEditorEntry> _allValidAppEntries;
+        [NonSerialized] private Dictionary<string, List<SmartConfigKeyBridge>> _allKeyBridges;
         [NonSerialized] private Dictionary<RuntimePlatform, Dictionary<string, SmartConfigEditorEntry>> _allValidPlatformEntries;
 
         [NonSerialized] private Dictionary<string, List<SmartConfigEditorEntry>> _categoryEntries;
@@ -104,6 +105,7 @@ namespace CCLBStudio.SmartConfig
             BuildAndCheckValidPlatformEntries();
             BuildAndCheckCategoryEntries();
             
+            BuildKeyBridges();
             BuildAppEntryIndexes();
             BuildAllFilteredEntries();
         }
@@ -507,6 +509,57 @@ namespace CCLBStudio.SmartConfig
             }
         }
 
+        private void BuildKeyBridges()
+        {
+            var bridges = ScEditorExtender.LoadScriptableAssets<SmartConfigKeyBridge>();
+            _allKeyBridges = new Dictionary<string, List<SmartConfigKeyBridge>>(bridges.Length);
+            
+            if (bridges.Length <= 0)
+            {
+                Debug.Log("No bridge found.");
+                return;
+            }
+            
+            foreach (var bridge in bridges)
+            {
+                if (!_allKeyBridges.ContainsKey(bridge.key))
+                {
+                    _allKeyBridges[bridge.key] = new List<SmartConfigKeyBridge>(1) { bridge };
+                }
+                else
+                {
+                    _allKeyBridges[bridge.key].Add(bridge);
+                    _allKeyBridges[bridge.key].TrimExcess();
+                }
+            }
+        }
+
+        private void SynchronizeBridgesWithNewEntryKey(string oldKey, SmartConfigEditorEntry editorEntry)
+        {
+            if (!_allKeyBridges.ContainsKey(oldKey))
+            {
+                return;
+            }
+            
+            var list = _allKeyBridges[oldKey];
+            _allKeyBridges.Remove(oldKey);
+
+            foreach (var bridge in list)
+            {
+                bridge.key = editorEntry.key;
+                EditorUtility.SetDirty(bridge);
+            }
+                
+            if (!_allKeyBridges.ContainsKey(editorEntry.key))
+            {
+                _allKeyBridges.Add(editorEntry.key, list);
+            }
+            else
+            {
+                _allKeyBridges[editorEntry.key].AddRange(list);
+            }
+        }
+
         private void BuildAndCheckValidPlatformEntries()
         {
             _allValidPlatformEntries = new Dictionary<RuntimePlatform, Dictionary<string, SmartConfigEditorEntry>>(platformEntries.Count);
@@ -569,6 +622,11 @@ namespace CCLBStudio.SmartConfig
                 BuildAndCheckValidAppEntries();
             }
 
+            if (_allKeyBridges == null)
+            {
+                BuildKeyBridges();
+            }
+
             if (_allValidAppEntries!.ContainsKey(oldKey))
             {
                 if (_allValidAppEntries[oldKey] == editorEntry)
@@ -582,6 +640,8 @@ namespace CCLBStudio.SmartConfig
             {
                 CheckNewAppEntryValidity(editorEntry);
             }
+            
+            SynchronizeBridgesWithNewEntryKey(oldKey, editorEntry);
         }
 
         private void CheckPlatformEntryKey(RuntimePlatform platform,  string oldKey, SmartConfigEditorEntry editorEntry)

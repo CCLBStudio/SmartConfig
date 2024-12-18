@@ -22,9 +22,7 @@ MonoBehaviour:
     twoLettersIsoDisplay: EN
     languageName: English
     flag: {fileID: 2800000, guid: c4122cc3c5850dd45b66a68413e94497, type: 3}
-  allCategories:
-  - key: Test
-    value: test_
+  allCategories: []
   platformEntries:
   - key: 11
     value:
@@ -167,10 +165,10 @@ MonoBehaviour:
       editorData: {fileID: 11400000}
       editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   allAppEntries:
-  - key: test_my_awesome_key_1
+  - key: my_awesome_key_1
     type: 4
-    category: Test
-    categoryIndex: 1
+    category: 
+    categoryIndex: 0
     respectCategoryPrefix: 1
     isValid: 1
     intValue: 0
@@ -186,8 +184,8 @@ MonoBehaviour:
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   - key: test_my_awesome_key_2
     type: 0
-    category: Test
-    categoryIndex: 1
+    category: 
+    categoryIndex: 0
     respectCategoryPrefix: 1
     isValid: 1
     intValue: 15
@@ -203,8 +201,8 @@ MonoBehaviour:
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   - key: test_my_awesome_key_3
     type: 2
-    category: Test
-    categoryIndex: 1
+    category: 
+    categoryIndex: 0
     respectCategoryPrefix: 1
     isValid: 1
     intValue: 0
@@ -220,8 +218,8 @@ MonoBehaviour:
     editSettings: {fileID: 11400000, guid: d086703ad137a904fb47faec1de28262, type: 2}
   - key: test_my_awesome_key_4
     type: 3
-    category: Test
-    categoryIndex: 1
+    category: 
+    categoryIndex: 0
     respectCategoryPrefix: 1
     isValid: 1
     intValue: 0
