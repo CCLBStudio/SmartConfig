@@ -146,6 +146,7 @@ namespace CCLBStudio.SmartConfig
                 EditorPrefs.SetInt(LastOpenTab, _selectedTab);
             }
             
+            Undo.RecordObject(_editorData, "Editing Smart Config");
             switch (_selectedTab)
             {
                 case 0:
@@ -913,7 +914,7 @@ namespace CCLBStudio.SmartConfig
 
                 if (GUILayout.Button("Assign To All Visible Entries", GUILayout.Width(_settings.categoryAddToVisibleButtonWidth)))
                 {
-                    _editorData.NotifyMultipleEntriesCategoryChanged(_entriesToDraw, i + 1);
+                    _editorData.NotifyMultipleEntriesCategoryChanged(_entriesToDraw, i);
                     RefreshDrawingData();
                 }
                 GUILayout.Space(_settings.spacingBetweenElements);
