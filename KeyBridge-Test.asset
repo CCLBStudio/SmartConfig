@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b08790a04e75004d84699f4493e3d20, type: 3}
   m_Name: KeyBridge-Test
   m_EditorClassIdentifier: 
-  key: my_awesome_key_1
+  key: codex_lusignan_item_detail_city

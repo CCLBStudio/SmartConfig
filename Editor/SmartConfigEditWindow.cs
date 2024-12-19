@@ -220,7 +220,6 @@ namespace CCLBStudio.SmartConfig
             EditorPrefs.SetString(SelectedServiceName, _currentlySelectedServiceName);
             
             _editorData.NotifyNewServiceSelected(_smartConfigService);
-            LoadFromCurrentService();
         }
 
         private bool CheckAssets()
@@ -228,13 +227,11 @@ namespace CCLBStudio.SmartConfig
             if (!_editorData)
             {
                 CreateAndBindEditorDataSaver();
-                //return false;
             }
             
             if (!_smartConfigService)
             {
                 TrySelectCurrentService();
-                //_smartConfigService = ScEditorExtender.LoadScriptableAsset<SmartConfigService>();
                 EditorGUILayout.HelpBox("Unable to load the Smart Config Service !", MessageType.Error);
                 return false;
             }
@@ -1103,7 +1100,6 @@ namespace CCLBStudio.SmartConfig
             _entriesToDraw = _editorData.GetAppEntriesForFilter(_typeFilter);
             if (_currentCategoryFilterIndex > 0)
             {
-                //_entriesToDraw = _entriesToDraw.FindAll(x => x.categoryIndex == _currentCategoryFilterIndex);
                 _entriesToDraw = _entriesToDraw.FindAll(x => x.categoryIndex == _currentCategoryFilterIndex - 1);
             }
 
@@ -1397,7 +1393,6 @@ namespace CCLBStudio.SmartConfig
             if (shouldDraw)
             {
                 EditorGUI.BeginChangeCheck();
-                //int index = EditorGUI.Popup(rect, editorEntry.categoryIndex, _sortingCategories);
                 int index = EditorGUI.Popup(rect, editorEntry.categoryIndex, _categories);
                 if (EditorGUI.EndChangeCheck())
                 {

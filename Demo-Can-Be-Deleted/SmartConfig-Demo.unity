@@ -739,7 +739,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   service: {fileID: 11400000, guid: ec2cf898c4320994aad195ca0cf2e607, type: 2}
-  keyType: 0
+  keyType: 1
   key: my_awesome_key_1
   keyBridge: {fileID: 11400000, guid: 8afc4f51bfb310346948ef1fd4238249, type: 2}
 --- !u!1 &963194225

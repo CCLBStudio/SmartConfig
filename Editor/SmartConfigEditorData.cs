@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-//using Newtonsoft.Json;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -96,11 +95,6 @@ namespace CCLBStudio.SmartConfig
             foreach (var entry in sc.allEntries)
             {
                 var editorEntry = new SmartConfigEditorEntry(entry, this);
-                // if (string.IsNullOrEmpty(editorEntry.category))
-                // {
-                //     editorEntry.category = "Default";
-                // }
-                
                 allAppEntries.Add(editorEntry);
             }
 
@@ -259,12 +253,12 @@ namespace CCLBStudio.SmartConfig
 
         public void NotifyEntryCategoryChanged(SmartConfigEditorEntry editorEntry, int index)
         {
-            if (index <= 0)
-            {
-                ResetEntryCategory(editorEntry);
-                SetDirty();
-                return;
-            }
+            // if (index <= 0)
+            // {
+            //     ResetEntryCategory(editorEntry);
+            //     SetDirty();
+            //     return;
+            // }
             
             editorEntry.categoryIndex = index;
             editorEntry.category = allCategories[index].Key;
@@ -277,15 +271,17 @@ namespace CCLBStudio.SmartConfig
         {
             foreach (var editorEntry in editorEntries)
             {
-                if (index <= 0)
-                {
-                    ResetEntryCategory(editorEntry);
-                }
-                else
-                {
-                    editorEntry.categoryIndex = index;
-                    editorEntry.category = allCategories[index].Key;
-                }
+                editorEntry.categoryIndex = index;
+                editorEntry.category = allCategories[index].Key;
+                // if (index <= 0)
+                // {
+                //     ResetEntryCategory(editorEntry);
+                // }
+                // else
+                // {
+                //     editorEntry.categoryIndex = index;
+                //     editorEntry.category = allCategories[index].Key;
+                // }
             }
             
             BuildAndCheckCategoryEntries();
@@ -348,13 +344,12 @@ namespace CCLBStudio.SmartConfig
 
         private void CheckEntryCategoryPrefix(SmartConfigEditorEntry editorEntry)
         {
-            if (string.IsNullOrEmpty(editorEntry.category) || editorEntry.categoryIndex <= 0)
-            {
-                ResetEntryCategory(editorEntry);
-                return;
-            }
+            // if (string.IsNullOrEmpty(editorEntry.category) || editorEntry.categoryIndex <= 0)
+            // {
+            //     ResetEntryCategory(editorEntry);
+            //     return;
+            // }
 
-            //if (allCategories[editorEntry.categoryIndex - 1].Key != editorEntry.category)
             if (allCategories[editorEntry.categoryIndex].Key != editorEntry.category)
             {
                 Debug.LogError($"Problem with category for entry {editorEntry.key}. The entry category do not match the relative category at provided index. Resetting entry category...");
