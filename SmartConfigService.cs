@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -17,7 +18,6 @@ namespace CCLBStudio.SmartConfig
         public static string ExistingLanguagesProperty => nameof(existingLanguages);
 
         public List<SmartConfigKeyValuePair<string, int>> keyUses = new();
-
 #endif
 #endregion
 
@@ -75,7 +75,6 @@ namespace CCLBStudio.SmartConfig
         [NonSerialized] private Dictionary<string, string> _runtimeStringValues;
         [NonSerialized] private SmartConfigData _runtimeConfig;
         [NonSerialized] private SystemLanguage? _currentlySelectedLanguage;
-        [NonSerialized] private SystemLanguage _currentlyTranslatedLanguage;
         [NonSerialized] private List<ISmartConfigListener> _listeners;
 
         private enum InitializeAction {None, LoadFromCloud, LoadFromLocalFile}
@@ -104,7 +103,6 @@ namespace CCLBStudio.SmartConfig
 
             _runtimeConfig = null;
             _currentlySelectedLanguage = null;
-            _currentlyTranslatedLanguage = SystemLanguage.Unknown;
 
             switch (onInitialized)
             {
@@ -156,7 +154,6 @@ namespace CCLBStudio.SmartConfig
 
         private void OnRemoteConfigFetched(string json)
         {
-            Debug.Log("--- SMART CONFIG --- Successfully downloaded the smart config file ! Loading...");
             _runtimeConfig = new SmartConfigData(json);
             LoadFrom(_runtimeConfig);
         }
@@ -275,12 +272,6 @@ namespace CCLBStudio.SmartConfig
         /// <param name="lang"></param>
         public void SelectLanguage(SystemLanguage lang)
         {
-            if (_currentlyTranslatedLanguage == lang)
-            {
-                Debug.Log($"--- SMART CONFIG --- Language {lang.ToString()} is already the selected language.");
-                return;
-            }
-
             _currentlySelectedLanguage = lang;
 
             if (_runtimeConfig == null)
@@ -304,8 +295,6 @@ namespace CCLBStudio.SmartConfig
 
                 _runtimeStringValues[key] = _runtimeConfig.translatableEntries[key].value[lang];
             }
-
-            _currentlyTranslatedLanguage = lang;
         }
 
         #endregion
@@ -316,7 +305,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeBoolValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the boolean dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key \"{key}\" is not present in the boolean dictionary !");
                 value = false;
                 return false;
             }
@@ -333,7 +322,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeFloatValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the float dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key \"{key}\" is not present in the float dictionary !");
                 value = -1f;
                 return false;
             }
@@ -350,7 +339,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeStringValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the string dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key \"{key}\" is not present in the string dictionary !");
                 value = string.Empty;
                 return false;
             }
@@ -367,7 +356,7 @@ namespace CCLBStudio.SmartConfig
         {
             if (!_runtimeIntValues.ContainsKey(key))
             {
-                Debug.LogWarning($"--- SMART CONFIG --- Key {key} is not present in the int dictionary !");
+                Debug.LogWarning($"--- SMART CONFIG --- Key \"{key}\" is not present in the int dictionary !");
                 value = -1;
                 return false;
             }
